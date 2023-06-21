@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:project_topics_movil/src/providers/register_form_provider.dart';
 
+import 'package:provider/provider.dart';
+
+import 'package:project_topics_movil/src/providers/register_form_provider.dart';
 import 'package:project_topics_movil/src/share_preferens/user_preferences.dart';
 import 'package:project_topics_movil/src/ui/index.dart';
-import 'package:provider/provider.dart';
 
 class PerfilPage extends StatelessWidget {
   const PerfilPage({super.key});
@@ -18,7 +19,6 @@ class PerfilPage extends StatelessWidget {
         child: Center(
           child: Column(
             children: [
-              const SizedBox(height: 10),
               //User photo
               ClipRRect(
                 borderRadius: BorderRadius.circular(100),
@@ -37,16 +37,16 @@ class PerfilPage extends StatelessWidget {
                   Text(
                     prefs.name,
                     style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 17,
                     ),
                   ),
                   const Text(" | "),
                   Text(
                     prefs.email,
                     style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 17,
                     ),
                   ),
                 ],
@@ -56,7 +56,9 @@ class PerfilPage extends StatelessWidget {
               //Bio
               Text(
                 "Ci: ${prefs.ci}",
-                style: TextStyle(color: Colors.grey[600]),
+                style: TextStyle(
+                  color: Colors.grey[700],
+                ),
                 textAlign: TextAlign.center,
               ),
 
@@ -92,7 +94,7 @@ class _PerfilForm extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 25),
             child: TextFormField(
               autocorrect: true,
-              style: const TextStyle(fontWeight: FontWeight.w500),
+              style: const TextStyle(fontWeight: FontWeight.w600),
               keyboardType: TextInputType.text,
               decoration: LoginInputDecoration.inputDecoration(
                 hintText: 'Dirección',
@@ -111,7 +113,7 @@ class _PerfilForm extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 25),
             child: TextFormField(
-              style: const TextStyle(fontWeight: FontWeight.w500),
+              style: const TextStyle(fontWeight: FontWeight.w600),
               keyboardType: TextInputType.phone,
               decoration: LoginInputDecoration.inputDecoration(
                 hintText: 'Telefono',
@@ -130,7 +132,7 @@ class _PerfilForm extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 25),
             child: TextFormField(
-              style: const TextStyle(fontWeight: FontWeight.w500),
+              style: const TextStyle(fontWeight: FontWeight.w600),
               obscureText: true,
               keyboardType: TextInputType.text,
               decoration: LoginInputDecoration.inputDecoration(
@@ -164,7 +166,7 @@ class _PerfilForm extends StatelessWidget {
                     if (!editProfileForm.isValidForm()) return;
 
                     editProfileForm.isLoading = true;
-                    var response = await editProfileForm.updateProfile();
+                    final response = await editProfileForm.updateProfile();
                     if (response.containsKey('message')) {
                       // ignore: use_build_context_synchronously
                       showDialog(
@@ -202,7 +204,7 @@ class _PerfilForm extends StatelessWidget {
                       'Guardar',
                       style: TextStyle(
                         color: Colors.white,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.bold,
                         fontSize: 15,
                       ),
                     ),

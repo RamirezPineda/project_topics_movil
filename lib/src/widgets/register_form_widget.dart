@@ -87,7 +87,7 @@ class RegisterForm extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 25),
             child: TextFormField(
               style: const TextStyle(
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.bold,
               ),
               enabled: registerForm.name == '',
               keyboardType: TextInputType.text,
@@ -115,7 +115,7 @@ class RegisterForm extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 25),
                         child: TextFormField(
                           style: const TextStyle(
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.bold,
                           ),
                           enabled: false,
                           keyboardType: TextInputType.text,
@@ -131,7 +131,7 @@ class RegisterForm extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 25),
                         child: TextFormField(
                           style: const TextStyle(
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.bold,
                           ),
                           keyboardType: TextInputType.text,
                           decoration: LoginInputDecoration.inputDecoration(
@@ -152,7 +152,7 @@ class RegisterForm extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 25),
                         child: TextFormField(
                           style: const TextStyle(
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.bold,
                           ),
                           keyboardType: TextInputType.phone,
                           decoration: LoginInputDecoration.inputDecoration(
@@ -173,7 +173,7 @@ class RegisterForm extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 25),
                         child: TextFormField(
                           style: const TextStyle(
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.bold,
                           ),
                           keyboardType: TextInputType.emailAddress,
                           decoration: LoginInputDecoration.inputDecoration(
@@ -196,7 +196,7 @@ class RegisterForm extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 25),
                         child: TextFormField(
                           style: const TextStyle(
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.bold,
                           ),
                           obscureText: true,
                           keyboardType: TextInputType.text,
@@ -227,7 +227,7 @@ class RegisterForm extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 25),
                     child: TextFormField(
                       style: const TextStyle(
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.bold,
                       ),
                       keyboardType: TextInputType.number,
                       decoration: LoginInputDecoration.inputDecoration(
@@ -308,7 +308,7 @@ class RegisterForm extends StatelessWidget {
                       'Registrarse',
                       style: TextStyle(
                         color: Colors.white,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.bold,
                         fontSize: 15,
                       ),
                     ),

@@ -32,7 +32,7 @@ class LoginPage extends StatelessWidget {
                 // Login form
                 ChangeNotifierProvider(
                   create: (BuildContext context) => LoginFormProvider(),
-                  child: LoginForm(),
+                  child: const LoginForm(),
                 ),
 
                 const SizedBox(height: 50),

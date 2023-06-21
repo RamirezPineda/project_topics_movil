@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
-import 'dart:convert';
 
-import 'package:http/http.dart' as http;
 import 'package:project_topics_movil/src/constants/http_config.dart';
 import 'package:project_topics_movil/src/share_preferens/user_preferences.dart';
 
@@ -39,13 +37,15 @@ class LoginFormProvider extends ChangeNotifier {
     try {
       final Map<String, String> data = {'email': email, 'password': password};
       final response = await _dio.post('/api/login', data: data);
-      // print(response.data);
+
       saveUserPreferences(response.data);
 
       return response.data;
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       if (e.response != null) return e.response?.data;
 
+      return {'message': "Ocurrio un error en el server"};
+    } catch (e) {
       return {'message': "Ocurrio un error en el server"};
     }
   }
@@ -62,6 +62,8 @@ class LoginFormProvider extends ChangeNotifier {
     prefs.phone = dataMap['phone'];
     prefs.photo = dataMap['photo'];
     prefs.personId = dataMap['personId'];
+    prefs.lastPasswordChange =
+        DateTime.parse(dataMap['lastPasswordChange']).toLocal().toString();
 
     prefs.password = password;
   }

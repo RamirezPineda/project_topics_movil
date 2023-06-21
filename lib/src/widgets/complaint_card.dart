@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'package:project_topics_movil/src/services/complaint_service.dart';
+import 'package:project_topics_movil/src/services/index.dart';
 import 'package:project_topics_movil/src/models/index.dart';
 import 'package:project_topics_movil/src/controllers/index.dart';
 import 'package:project_topics_movil/src/ui/index.dart';
@@ -17,8 +17,8 @@ class ComplaintCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final Complaint complaint =
-    //     Complaint(title: '', description: '', photos: []);
+    final CategoryService categoryService =
+        Provider.of<CategoryService>(context);
     return Scaffold(
       appBar: AppBar(),
       body: SingleChildScrollView(
@@ -28,13 +28,18 @@ class ComplaintCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               //Header
-              const SizedBox(height: 30),
-              Text(
-                'Denuncia de:',
-                style: TextStyle(fontSize: 20, color: Colors.grey[700]),
+              const SizedBox(height: 10),
+              // Text(
+              //   'Relleno los datos del:',
+              //   style: TextStyle(fontSize: 20, color: Colors.grey[700]),
+              // ),
+              const Text(
+                'Formulario',
+                style: TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
-              Text('Alcantarillado',
-                  style: GoogleFonts.bebasNeue(fontSize: 50)),
 
               const SizedBox(height: 10),
 
@@ -43,9 +48,9 @@ class ComplaintCard extends StatelessWidget {
                 child: Divider(color: Colors.grey, thickness: 1),
               ),
               Text(
-                'Rellene los datos del formulario',
+                'Rellene los datos',
                 style: TextStyle(
-                  fontSize: 21,
+                  fontSize: 20,
                   fontWeight: FontWeight.bold,
                   color: Colors.grey[700],
                 ),
@@ -55,9 +60,8 @@ class ComplaintCard extends StatelessWidget {
 
               // Form
               ChangeNotifierProvider(
-                create: (BuildContext context) =>
-                    ComplaintFormController(complaint),
-                child: _ComplaintForm(),
+                create: (context) => ComplaintFormController(complaint),
+                child: _ComplaintForm(categoryService: categoryService),
               ),
             ],
           ),
@@ -68,18 +72,30 @@ class ComplaintCard extends StatelessWidget {
 }
 
 class _ComplaintForm extends StatelessWidget {
-  const _ComplaintForm({super.key});
+  const _ComplaintForm({required this.categoryService});
+
+  final CategoryService categoryService;
 
   @override
   Widget build(BuildContext context) {
-    final ComplaintService complaintService = ComplaintService();
+    final ComplaintService complaintService =
+        Provider.of<ComplaintService>(context);
     final ComplaintFormController complaintForm =
         Provider.of<ComplaintFormController>(context);
+
+    if (categoryService.isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    if (complaintForm.complaint.categoryId == '') {
+      complaintForm.complaint.categoryId =
+          categoryService.dropdownList[0].value!;
+    }
+
     return Form(
       key: complaintForm.formKey,
       child: Column(
         children: [
-          // username field
+          // title field
           TextFormField(
             style: const TextStyle(
               fontWeight: FontWeight.w500,
@@ -89,10 +105,14 @@ class _ComplaintForm extends StatelessWidget {
               hintText: 'Título',
               labelText: 'Título',
             ),
+            maxLength: 50,
+            initialValue: complaintForm.complaint.title,
             onChanged: (value) => complaintForm.complaint.title = value,
-            validator: (value) => value != null && value.trim().length > 8
+            validator: (value) => value != null &&
+                    value.trim().length > 7 &&
+                    value.trim().length < 51
                 ? null
-                : "Título demasiado corto",
+                : "Minimo 8 caracteres, maximo 50",
           ),
 
           const SizedBox(height: 20),
@@ -107,6 +127,8 @@ class _ComplaintForm extends StatelessWidget {
               hintText: 'Descripción',
               labelText: 'Descripción',
             ),
+            maxLength: 512,
+            initialValue: complaintForm.complaint.description,
             onChanged: (value) => complaintForm.complaint.description = value,
             validator: (value) {
               return value != null &&
@@ -115,6 +137,36 @@ class _ComplaintForm extends StatelessWidget {
                   ? null
                   : 'Debe tener minimo 64 caracteres y maximo 512 \ncaracteres';
             },
+          ),
+          const SizedBox(height: 10),
+
+          // Category complaint Dropdown
+          Visibility(
+            visible: complaintForm.complaint.id == null,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(width: 0.5, color: Colors.grey),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: DropdownButton(
+                  isExpanded: true,
+                  borderRadius: BorderRadius.circular(10),
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16,
+                  ),
+                  value: complaintForm.complaint.categoryId,
+                  items: categoryService.dropdownList,
+                  onChanged: (value) {
+                    complaintForm.complaint.categoryId = value!;
+                    complaintForm.isLoading = false;
+                  },
+                ),
+              ),
+            ),
           ),
           const SizedBox(height: 10),
 
@@ -175,10 +227,15 @@ class _ComplaintForm extends StatelessWidget {
                                   imageQuality: 100,
                                 );
 
-                                if (image == null) {
-                                  print('No saco ninguna foto 1');
+                                if (image == null) return;
+
+                                if (complaintForm
+                                    .isImageExtensionValid(image.path)) {
+                                  // ignore: use_build_context_synchronously
+                                  imageExtensionInvalidMessage(context);
                                   return;
                                 }
+
                                 complaintForm.complaint.photos.add(image.path);
                                 complaintForm.isLoading = false;
                               },
@@ -196,10 +253,15 @@ class _ComplaintForm extends StatelessWidget {
                                   imageQuality: 100,
                                 );
 
-                                if (image == null) {
-                                  print('No saco ninguna foto 1');
+                                if (image == null) return;
+
+                                if (complaintForm
+                                    .isImageExtensionValid(image.path)) {
+                                  // ignore: use_build_context_synchronously
+                                  imageExtensionInvalidMessage(context);
                                   return;
                                 }
+
                                 complaintForm.complaint.photos.add(image.path);
                                 complaintForm.isLoading = false;
                               },
@@ -260,8 +322,24 @@ class _ComplaintForm extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             IconButton(
-                              onPressed: () {
-                                print('camera pressed2');
+                              onPressed: () async {
+                                final ImagePicker picker = ImagePicker();
+                                final XFile? image = await picker.pickImage(
+                                  source: ImageSource.camera,
+                                  imageQuality: 100,
+                                );
+
+                                if (image == null) return;
+
+                                if (complaintForm
+                                    .isImageExtensionValid(image.path)) {
+                                  // ignore: use_build_context_synchronously
+                                  imageExtensionInvalidMessage(context);
+                                  return;
+                                }
+
+                                complaintForm.complaint.photos.add(image.path);
+                                complaintForm.isLoading = false;
                               },
                               icon: Icon(
                                 Icons.camera_alt_rounded,
@@ -277,10 +355,15 @@ class _ComplaintForm extends StatelessWidget {
                                   imageQuality: 100,
                                 );
 
-                                if (image == null) {
-                                  print('No saco ninguna foto 2');
+                                if (image == null) return;
+
+                                if (complaintForm
+                                    .isImageExtensionValid(image.path)) {
+                                  // ignore: use_build_context_synchronously
+                                  imageExtensionInvalidMessage(context);
                                   return;
                                 }
+
                                 complaintForm.complaint.photos.add(image.path);
                                 complaintForm.isLoading = false;
                               },
@@ -309,12 +392,34 @@ class _ComplaintForm extends StatelessWidget {
                 ? null
                 : () async {
                     FocusScope.of(context).unfocus();
+                    final navigator = Navigator.of(context);
                     if (!complaintForm.isValidForm()) return;
 
+                    if (complaintForm.complaint.photos.isEmpty) {
+                      showDialog(
+                        context: context,
+                        builder: (context) => const AlertDialog(
+                          title: Text("Debe enviar una foto"),
+                        ),
+                      );
+                      return;
+                    }
+
                     complaintForm.isLoading = true;
-                    await complaintService
+                    final response = await complaintService
                         .registerOrUpdate(complaintForm.complaint);
                     complaintForm.isLoading = false;
+                    if (response.containsKey('message')) {
+                      // ignore: use_build_context_synchronously
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: Text(response['message']),
+                        ),
+                      );
+                    } else {
+                      navigator.pop();
+                    }
                   },
             child: Container(
               padding: complaintForm.isLoading
@@ -342,6 +447,15 @@ class _ComplaintForm extends StatelessWidget {
 
           const SizedBox(height: 30),
         ],
+      ),
+    );
+  }
+
+  Future<dynamic> imageExtensionInvalidMessage(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (context) => const AlertDialog(
+        title: Text("Debe enviar una foto con extención jpg o jpeg"),
       ),
     );
   }

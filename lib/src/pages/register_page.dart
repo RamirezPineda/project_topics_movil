@@ -21,7 +21,7 @@ class RegisterPage extends StatelessWidget {
               // Login form
               ChangeNotifierProvider(
                 create: (BuildContext context) => RegisterFormProvider(),
-                child: RegisterForm(),
+                child: const RegisterForm(),
               ),
 
               const SizedBox(height: 50),

@@ -23,6 +23,8 @@ class UserPreferences {
   String get photo => _prefs.getString('photo') ?? '';
   String get personId => _prefs.getString('personId') ?? '';
 
+  String get lastPasswordChange => _prefs.getString('lastPasswordChange') ?? '';
+
   set token(String token) => _prefs.setString('token', token);
   set id(String id) => _prefs.setString('id', id);
   set email(String email) => _prefs.setString('email', email);
@@ -33,6 +35,9 @@ class UserPreferences {
   set phone(String phone) => _prefs.setString('phone', phone);
   set photo(String photo) => _prefs.setString('photo', photo);
   set personId(String personId) => _prefs.setString('personId', personId);
+
+  set lastPasswordChange(String lastPasswordChange) =>
+      _prefs.setString('lastPasswordChange', lastPasswordChange);
 
   // void setUser(
   //     {required String? email,

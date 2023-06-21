@@ -5,12 +5,18 @@ class Complaint {
   String title;
   String description;
   List<String> photos;
+  String state;
+  String categoryId;
+  DateTime? createdAt;
 
   Complaint({
     this.id,
     required this.title,
     required this.description,
     required this.photos,
+    required this.state,
+    required this.categoryId,
+    this.createdAt,
   });
 
   factory Complaint.fromJson(String str) => Complaint.fromMap(json.decode(str));
@@ -22,6 +28,11 @@ class Complaint {
         title: json["title"],
         description: json["description"],
         photos: List<String>.from(json["photos"].map((photo) => photo)),
+        state: json['state'],
+        categoryId: json['categoryId'],
+        createdAt: json['createdAt'] != null
+            ? DateTime.parse(json['createdAt']).toLocal()
+            : null,
       );
 
   Map<String, dynamic> toMap() => {
@@ -29,11 +40,18 @@ class Complaint {
         "title": title,
         "description": description,
         "photos": List<dynamic>.from(photos.map((photo) => photo)),
+        "state": state,
+        "categoryId": categoryId,
+        "createdAt": createdAt?.toIso8601String(),
       };
 
   Complaint copy() => Complaint(
-      title: title,
-      description: description,
-      photos: List.from(photos),
-      id: id);
+        id: id,
+        title: title,
+        description: description,
+        photos: List.from(photos),
+        state: state,
+        categoryId: categoryId,
+        createdAt: createdAt,
+      );
 }

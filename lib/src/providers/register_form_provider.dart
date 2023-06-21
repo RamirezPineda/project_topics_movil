@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
-import 'dart:convert';
 import 'dart:math';
 
-import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:project_topics_movil/src/constants/http_config.dart';
 import 'package:project_topics_movil/src/share_preferens/user_preferences.dart';
@@ -51,6 +50,9 @@ class RegisterFormProvider extends ChangeNotifier {
 
   Future<Map<String, dynamic>> verifyDataUser() async {
     try {
+      final fcmToken = await FirebaseMessaging.instance.getToken();
+      print('tokenMovil $fcmToken');
+//  eIvMCsYVTXStli4KyW_RYz:APA91bE-qeKMs0wU5iS_mOgy0B9_miTsY2GCg9VBoyTS_qBQsKqrtftP6RygYu-wBaYxWDHtIyX1i1kHWq_S5cAP1EP5hpwk_vxcOzanHifX9aAU0dYSvtycqbousGNWdINu2is_7KOt
       var formData = FormData.fromMap({
         'ci': ci,
         'image': await MultipartFile.fromFile(photoUrl),
@@ -74,6 +76,9 @@ class RegisterFormProvider extends ChangeNotifier {
         // print(e.message);
         return {'message': "Ocurrio un error en el server"};
       }
+    } catch (error) {
+      print("ERROR SERVER: $error");
+      return {'message': "Ocurrio un error en el server"};
     }
   }
 
@@ -87,6 +92,10 @@ class RegisterFormProvider extends ChangeNotifier {
         return response.data;
       }
 
+      final fcmToken = await FirebaseMessaging.instance.getToken();
+
+      print('Token del movil $fcmToken');
+
       final data = {
         'ci': ci,
         'name': name,
@@ -95,6 +104,7 @@ class RegisterFormProvider extends ChangeNotifier {
         'photo': photo,
         'email': email,
         'password': password,
+        'tokenMovil': fcmToken,
       };
       final response = await _dio.post('/api/register', data: data);
       return response.data;
@@ -130,6 +140,11 @@ class RegisterFormProvider extends ChangeNotifier {
       prefs.phone = response.data['phone'];
       if (password != '') {
         prefs.password = password;
+        prefs.lastPasswordChange =
+            DateTime.parse(response.data['lastPasswordChange'])
+                .toLocal()
+                .toString();
+        print(prefs.lastPasswordChange);
         password = '';
       }
 

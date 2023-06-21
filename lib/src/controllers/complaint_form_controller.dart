@@ -18,4 +18,10 @@ class ComplaintFormController extends ChangeNotifier {
     _isLoading = value;
     notifyListeners();
   }
+
+  bool isImageExtensionValid(String filePath) {
+    final validExtensions = ['.jpg', '.jpeg'];
+    final fileExtension = filePath.toLowerCase().split('.').last;
+    return validExtensions.contains(fileExtension);
+  }
 }

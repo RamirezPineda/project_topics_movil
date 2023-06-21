@@ -22,7 +22,7 @@ class LoginForm extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 25),
             child: TextFormField(
               style: const TextStyle(
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.bold,
               ),
               keyboardType: TextInputType.emailAddress,
               decoration: LoginInputDecoration.inputDecoration(
@@ -46,7 +46,7 @@ class LoginForm extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 25),
             child: TextFormField(
               style: const TextStyle(
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.bold,
               ),
               obscureText: true,
               keyboardType: TextInputType.text,
@@ -112,7 +112,7 @@ class LoginForm extends StatelessWidget {
                       'Iniciar sesión',
                       style: TextStyle(
                         color: Colors.white,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.bold,
                         fontSize: 15,
                       ),
                     ),
@@ -131,8 +131,8 @@ class LoginForm extends StatelessWidget {
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15.0)),
             title: const Text('Error', style: TextStyle(color: Colors.red)),
-            content: Row(
-              children: const [
+            content: const Row(
+              children: [
                 Icon(Icons.error, color: Colors.red),
                 SizedBox(width: 5),
                 Text('Email o passwod incorrectos')

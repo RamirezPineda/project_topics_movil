@@ -8,6 +8,8 @@ class CategoryService extends ChangeNotifier {
   final _dio = Dio();
 
   List<Category> categoryList = [];
+  List<DropdownMenuItem<String>> dropdownList = [];
+
   bool _isLoading = false;
 
   CategoryService() {
@@ -25,7 +27,9 @@ class CategoryService extends ChangeNotifier {
 
   Future<void> getAllCategories() async {
     _isLoading = true;
+    notifyListeners();
     print('llamada');
+
     try {
       final response = await _dio.get('/api/categories');
       final List<dynamic> allCategories = response.data;
@@ -34,12 +38,24 @@ class CategoryService extends ChangeNotifier {
         final Category category = Category.fromMap(element);
         categoryList.add(category);
       }
-    } on DioError catch (e) {
+      loadDropdownList(categoryList);
+    } on DioError {
       // if (e.response != null) return [];
       // print(e);
     } finally {
       _isLoading = false;
       notifyListeners();
+    }
+  }
+
+  void loadDropdownList(List<Category> category) {
+    for (var i = 0; i < category.length; i++) {
+      dropdownList.add(
+        DropdownMenuItem(
+          value: category[i].id,
+          child: Text(category[i].name),
+        ),
+      );
     }
   }
 }

@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
-import 'package:provider/provider.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
 import 'package:project_topics_movil/src/constants/routes.dart';
 import 'package:project_topics_movil/src/share_preferens/user_preferences.dart';
-
 import 'package:project_topics_movil/src/pages/index.dart';
-import 'package:project_topics_movil/src/services/index.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -23,19 +20,14 @@ class _HomePageState extends State<HomePage> {
 
   final List<Widget> tabBarViews = [
     //Home
-    ChangeNotifierProvider(
-      create: (BuildContext context) => CategoryService(),
-      child: ComplaintsPage(),
-    ),
 
+    const ComplaintsPage(),
     // History
-    ChangeNotifierProvider(
-      create: (BuildContext context) => ComplaintService(),
-      child: HistoryPage(),
-    ),
+
+    const HistoryPage(),
 
     //My profile
-    PerfilPage(),
+    const PerfilPage(),
   ];
 
   @override
@@ -43,13 +35,16 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         leading: Builder(
-          builder: (context) => Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: IconButton(
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-              icon: const Icon(CupertinoIcons.square_grid_2x2, size: 40),
+          builder: (context) => GestureDetector(
+            onTap: () {
+              Scaffold.of(context).openDrawer();
+            },
+            child: Container(
+              color: Colors.transparent,
+              child: const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                child: Icon(Icons.dehaze, size: 25),
+              ),
             ),
           ),
         ),
@@ -58,20 +53,12 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: const Color(0xffFFFBFE),
         child: Column(
           children: [
-            DrawerHeader(child: Image.asset("assets/light-bulb.png")),
+            DrawerHeader(child: Image.asset("assets/splash.png")),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 25),
               child: Divider(color: Colors.grey[800]),
             ),
 
-            // Pages
-            const Padding(
-              padding: EdgeInsets.only(left: 25),
-              child: ListTile(
-                leading: Icon(Icons.home),
-                title: Text("Home"),
-              ),
-            ),
             Padding(
               padding: const EdgeInsets.only(left: 25),
               child: ListTile(
@@ -103,14 +90,14 @@ class _HomePageState extends State<HomePage> {
 
       //Button Navigator Bar
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 15),
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
         child: GNav(
           selectedIndex: _selectedIndex,
           onTabChange: (index) {
             setState(() => _selectedIndex = index);
           },
-          mainAxisAlignment: MainAxisAlignment.center,
           gap: 8,
+          mainAxisAlignment: MainAxisAlignment.center,
           backgroundColor: Colors.transparent,
           activeColor: Colors.black,
           color: Colors.grey[600],

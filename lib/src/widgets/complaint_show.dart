@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:project_topics_movil/src/models/index.dart';
-import 'package:project_topics_movil/src/widgets/index.dart';
 
 class ComplaintShow extends StatelessWidget {
   const ComplaintShow({super.key, required this.complaint});
@@ -24,17 +23,20 @@ class ComplaintShow extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.only(left: 30),
                 itemBuilder: (contex, index) {
-                  return Row(
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: Image.network(
-                          complaint.photos[index],
-                          height: 300,
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 15),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(15),
+                      child: SizedBox(
+                        height: 300,
+                        width: 230,
+                        child: FadeInImage(
+                          fit: BoxFit.cover,
+                          placeholder: const AssetImage('assets/loading.gif'),
+                          image: NetworkImage(complaint.photos[index]),
                         ),
                       ),
-                      const SizedBox(width: 30),
-                    ],
+                    ),
                   );
                 },
               ),
@@ -46,7 +48,7 @@ class ComplaintShow extends StatelessWidget {
                 complaint.title,
                 style: const TextStyle(
                   fontSize: 20,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
@@ -57,12 +59,14 @@ class ComplaintShow extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(width: 0.8),
+                  color: Colors.grey[200],
                 ),
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   child: Text(
-                    'Pendiente',
-                    style: TextStyle(
+                    complaint.state,
+                    style: const TextStyle(
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -74,57 +78,23 @@ class ComplaintShow extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 30),
               child: Text(
                 complaint.description,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
-                  color: Colors.grey,
+                  color: Colors.grey[600],
                 ),
               ),
             ),
-            const SizedBox(height: 40),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                MaterialButton(
-                  elevation: 0.5,
-                  disabledColor: Colors.blue[400],
-                  color: Colors.grey[100],
-                  shape: RoundedRectangleBorder(
-                    side: const BorderSide(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  onPressed: () {},
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 25, vertical: 15),
-                    child: const Text('Cancelar'),
-                  ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+              child: Text(
+                "Fecha: ${complaint.createdAt.toString()}",
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.grey[600],
                 ),
-                MaterialButton(
-                  elevation: 0.5,
-                  disabledColor: Colors.blue[400],
-                  color: Colors.grey[100],
-                  shape: RoundedRectangleBorder(
-                    side: const BorderSide(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ComplaintCard(
-                          complaint: complaint.copy(),
-                        ),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 25, vertical: 15),
-                    child: const Text('Editar'),
-                  ),
-                ),
-              ],
+              ),
             ),
           ],
         ),
