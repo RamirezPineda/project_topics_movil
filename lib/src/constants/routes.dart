@@ -5,13 +5,15 @@ import 'package:project_topics_movil/src/share_preferens/user_preferences.dart';
 import 'package:project_topics_movil/src/pages/index.dart';
 
 class Routes {
-  static const String HOME = 'home';
-  static const String LOGIN = 'login';
-  static const String REGISTER = 'register';
-  static const String PERFIL = 'perfil';
-  static const String HISTORY = 'history';
-  static const String COMPLAINTCARD = 'complaint/card';
-  static const String COMPLAINTSHOW = 'complaint/show';
+  static const String home = 'home';
+  static const String login = 'login';
+  static const String register = 'register';
+  static const String perfil = 'perfil';
+  static const String history = 'history';
+  static const String notification = 'notification';
+
+  static const String complaintCard = 'complaint/card';
+  static const String complaintShow = 'complaint/show';
 
   static Map<String, WidgetBuilder> getRoutes() {
     final prefs = UserPreferences();
@@ -19,11 +21,13 @@ class Routes {
     return <String, WidgetBuilder>{
       // LOGIN: (BuildContext context) =>
       //     prefs.clientId == 0 || prefs.token == '' ? LoginPage() : HomePage(),
-      LOGIN: (BuildContext context) => const LoginPage(),
-      REGISTER: (BuildContext context) => const RegisterPage(),
-      HOME: (BuildContext context) => const HomePage(),
-      PERFIL: (BuildContext context) => const PerfilPage(),
-      HISTORY: (BuildContext context) => const HistoryPage(),
+      login: (BuildContext context) =>
+          prefs.token != "" ? const HomePage() : const LoginPage(),
+      register: (BuildContext context) => const RegisterPage(),
+      home: (BuildContext context) => const HomePage(),
+      perfil: (BuildContext context) => const PerfilPage(),
+      history: (BuildContext context) => const HistoryPage(),
+      notification: (BuildContext context) => const NotificationPage(),
       // COMPLAINTCARD: (BuildContext context) => ComplaintCard(),
       // COMPLAINTSHOW: (BuildContext context) => ComplaintShow(),
     };

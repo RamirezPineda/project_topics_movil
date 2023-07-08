@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'package:project_topics_movil/src/constants/routes.dart';
 import 'package:project_topics_movil/src/ui/index.dart';
 
-import 'package:provider/provider.dart';
-
-import 'package:project_topics_movil/src/providers/login_form_provider.dart';
+import 'package:project_topics_movil/src/controllers/index.dart';
+import 'package:project_topics_movil/src/services/index.dart';
 
 class LoginForm extends StatelessWidget {
-  const LoginForm({super.key});
+  LoginForm({super.key});
+
+  final loginService = LoginService();
 
   @override
   Widget build(BuildContext context) {
-    final loginForm = Provider.of<LoginFormProvider>(context);
+    final loginForm = Provider.of<LoginFormController>(context);
+
     return Form(
       key: loginForm.formKey,
       // autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -29,7 +33,7 @@ class LoginForm extends StatelessWidget {
                 hintText: 'Email',
                 labelText: 'Email',
               ),
-              onChanged: (value) => loginForm.email = value,
+              onChanged: (value) => loginForm.user.email = value,
               validator: (value) {
                 String pattern =
                     r'^(([^&lt;&gt;()[\]\\.,;:\s@\"]+(\.[^&lt;&gt;()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
@@ -54,7 +58,7 @@ class LoginForm extends StatelessWidget {
                 hintText: '********',
                 labelText: 'Password',
               ),
-              onChanged: (value) => loginForm.password = value,
+              onChanged: (value) => loginForm.user.password = value,
               validator: (value) {
                 String pattern =
                     r"^(?=.*\d)(?=.*[\u0021-\u002b\u003c-\u0040])(?=.*[A-Z])(?=.*[a-z])\S{8,16}$";
@@ -83,14 +87,19 @@ class LoginForm extends StatelessWidget {
                 : () async {
                     FocusScope.of(context).unfocus();
                     if (!loginForm.isValidForm()) return;
+
                     loginForm.isLoading = true;
-                    final auth = await loginForm.authenticate();
+                    final auth =
+                        await loginService.authenticate(loginForm.user);
                     loginForm.isLoading = false;
+
                     if (auth.containsKey('message')) {
+                      // ignore: use_build_context_synchronously
                       _showDialogError(context);
                       return;
                     }
-                    Navigator.pushReplacementNamed(context, Routes.HOME);
+                    // ignore: use_build_context_synchronously
+                    Navigator.pushReplacementNamed(context, Routes.home);
 
                     // if (!context.mounted) return;
                     // _showDialogError(context);

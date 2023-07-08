@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
 
@@ -7,11 +6,10 @@ import 'package:project_topics_movil/src/widgets/index.dart';
 import 'package:project_topics_movil/src/utils/index.dart';
 
 class ComplaintItem extends StatelessWidget {
-  ComplaintItem({super.key, required this.complaint, this.delay});
+  const ComplaintItem({super.key, required this.complaint, this.delay});
 
   final Complaint complaint;
   final int? delay;
-  final int randomNumber = Random().nextInt(5) + 1;
 
   @override
   Widget build(BuildContext context) {
@@ -136,11 +134,10 @@ class ComplaintItem extends StatelessWidget {
                       ),
                     ],
                   ),
-
-                  // Date
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      // State
                       Badge(
                         backgroundColor:
                             StateColors.badgeStateColor(complaint.state),
@@ -154,6 +151,7 @@ class ComplaintItem extends StatelessWidget {
                           ),
                         ),
                       ),
+                      // Date
                       Row(
                         children: [
                           const Icon(Icons.date_range, color: Colors.white),

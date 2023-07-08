@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:project_topics_movil/src/constants/routes.dart';
-
 import 'package:provider/provider.dart';
 
-import 'package:project_topics_movil/src/providers/index.dart';
+import 'package:project_topics_movil/src/constants/routes.dart';
+import 'package:project_topics_movil/src/models/index.dart';
+// import 'package:project_topics_movil/src/services/login_service.dart';
+
+import 'package:project_topics_movil/src/controllers/index.dart';
 import 'package:project_topics_movil/src/widgets/index.dart';
 
 class LoginPage extends StatelessWidget {
@@ -30,9 +32,20 @@ class LoginPage extends StatelessWidget {
                 // const SizedBox(height: 10),
 
                 // Login form
+                // MultiProvider(
+                //   providers: [
+                //     ChangeNotifierProvider(
+                //         create: (BuildContext context) =>
+                //             LoginFormController(Auth(email: "", password: ""))),
+                //     ChangeNotifierProvider(create: (_) => LoginService()),
+                //   ],
+                //   child: const LoginForm(),
+                // ),
+
                 ChangeNotifierProvider(
-                  create: (BuildContext context) => LoginFormProvider(),
-                  child: const LoginForm(),
+                  create: (BuildContext context) =>
+                      LoginFormController(User(email: "", password: "")),
+                  child: LoginForm(),
                 ),
 
                 const SizedBox(height: 50),
@@ -63,7 +76,7 @@ class LoginPage extends StatelessWidget {
                 Text('O create una', style: TextStyle(color: Colors.grey[700])),
                 TextButton(
                   onPressed: () {
-                    Navigator.pushReplacementNamed(context, Routes.REGISTER);
+                    Navigator.pushReplacementNamed(context, Routes.register);
                   },
                   child: Text(
                     'nueva cuenta',

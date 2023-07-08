@@ -6,7 +6,8 @@ class Complaint {
   String description;
   List<String> photos;
   String state;
-  String categoryId;
+  String? observation;
+  String typeComplaintId;
   DateTime? createdAt;
 
   Complaint({
@@ -15,8 +16,9 @@ class Complaint {
     required this.description,
     required this.photos,
     required this.state,
-    required this.categoryId,
+    required this.typeComplaintId,
     this.createdAt,
+    this.observation,
   });
 
   factory Complaint.fromJson(String str) => Complaint.fromMap(json.decode(str));
@@ -24,16 +26,16 @@ class Complaint {
   String toJson() => json.encode(toMap());
 
   factory Complaint.fromMap(Map<String, dynamic> json) => Complaint(
-        id: json["_id"],
-        title: json["title"],
-        description: json["description"],
-        photos: List<String>.from(json["photos"].map((photo) => photo)),
-        state: json['state'],
-        categoryId: json['categoryId'],
-        createdAt: json['createdAt'] != null
-            ? DateTime.parse(json['createdAt']).toLocal()
-            : null,
-      );
+      id: json["_id"],
+      title: json["title"],
+      description: json["description"],
+      photos: List<String>.from(json["photos"].map((photo) => photo)),
+      state: json['state'],
+      typeComplaintId: json['typeComplaintId'],
+      createdAt: json['createdAt'] != null
+          ? DateTime.parse(json['createdAt']).toLocal()
+          : null,
+      observation: json['observation']);
 
   Map<String, dynamic> toMap() => {
         "_id": id,
@@ -41,8 +43,9 @@ class Complaint {
         "description": description,
         "photos": List<dynamic>.from(photos.map((photo) => photo)),
         "state": state,
-        "categoryId": categoryId,
+        "typeComplaintId": typeComplaintId,
         "createdAt": createdAt?.toIso8601String(),
+        "observation": observation,
       };
 
   Complaint copy() => Complaint(
@@ -51,7 +54,8 @@ class Complaint {
         description: description,
         photos: List.from(photos),
         state: state,
-        categoryId: categoryId,
+        typeComplaintId: typeComplaintId,
         createdAt: createdAt,
+        observation: observation,
       );
 }

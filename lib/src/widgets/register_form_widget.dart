@@ -1,19 +1,24 @@
-import 'package:flutter/material.dart';
 import 'dart:io';
+import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:project_topics_movil/src/constants/routes.dart';
-import 'package:project_topics_movil/src/providers/index.dart';
 import 'package:project_topics_movil/src/ui/index.dart';
 
+import 'package:project_topics_movil/src/controllers/index.dart';
+import 'package:project_topics_movil/src/services/index.dart';
+
 class RegisterForm extends StatelessWidget {
-  const RegisterForm({super.key});
+  RegisterForm({super.key});
+
+  final registerService = RegisterService();
 
   @override
   Widget build(BuildContext context) {
-    final registerForm = Provider.of<RegisterFormProvider>(context);
+    final registerForm = Provider.of<RegisterFormController>(context);
+
     return Form(
       key: registerForm.formKey,
       // autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -30,7 +35,7 @@ class RegisterForm extends StatelessWidget {
                 ]),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(100),
-                  child: registerForm.photoUrl == ''
+                  child: registerForm.person.photo == ''
                       ? Container(
                           height: 150,
                           width: 150,
@@ -38,12 +43,19 @@ class RegisterForm extends StatelessWidget {
                           child: const Icon(Icons.photo_camera,
                               size: 100, color: Colors.grey),
                         )
-                      : Image.file(
-                          File(registerForm.photoUrl),
-                          fit: BoxFit.cover,
-                          height: 150,
-                          width: 150,
-                        ),
+                      : registerForm.person.photo.startsWith('http')
+                          ? Image.network(
+                              registerForm.person.photo,
+                              fit: BoxFit.cover,
+                              height: 150,
+                              width: 150,
+                            )
+                          : Image.file(
+                              File(registerForm.person.photo),
+                              fit: BoxFit.cover,
+                              height: 150,
+                              width: 150,
+                            ),
                 ),
               ),
               Container(
@@ -61,10 +73,11 @@ class RegisterForm extends StatelessWidget {
                     );
 
                     if (image == null) {
-                      print('No saco ninguna foto');
                       return;
                     }
-                    registerForm.uploadPhoto(image.path);
+                    // registerForm.uploadPhoto(image.path);
+                    registerForm.person.photo = image.path;
+                    registerForm.isLoading = false;
                   },
                   icon: Icon(
                     Icons.add_circle,
@@ -89,13 +102,13 @@ class RegisterForm extends StatelessWidget {
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
               ),
-              enabled: registerForm.name == '',
+              enabled: registerForm.person.name == '',
               keyboardType: TextInputType.text,
               decoration: LoginInputDecoration.inputDecoration(
                 hintText: 'Ci',
                 labelText: 'Ci',
               ),
-              onChanged: (value) => registerForm.ci = value,
+              onChanged: (value) => registerForm.person.ci = value,
               validator: (value) {
                 return value != null && value.length >= 8
                     ? null
@@ -108,7 +121,7 @@ class RegisterForm extends StatelessWidget {
 
           // password field
           Container(
-            child: registerForm.name != ''
+            child: registerForm.person.name != ''
                 ? Column(
                     children: [
                       Padding(
@@ -123,7 +136,7 @@ class RegisterForm extends StatelessWidget {
                             hintText: 'Nombre',
                             labelText: 'Nombre',
                           ),
-                          initialValue: registerForm.name,
+                          initialValue: registerForm.person.name,
                         ),
                       ),
                       const SizedBox(height: 15),
@@ -138,13 +151,14 @@ class RegisterForm extends StatelessWidget {
                             hintText: 'Dirección',
                             labelText: 'Dirección',
                           ),
-                          onChanged: (value) => registerForm.address = value,
+                          onChanged: (value) =>
+                              registerForm.person.address = value,
                           validator: (value) {
                             return value != null && value.length > 3
                                 ? null
                                 : "Dirección no valida";
                           },
-                          initialValue: registerForm.address,
+                          initialValue: registerForm.person.address,
                         ),
                       ),
                       const SizedBox(height: 15),
@@ -159,13 +173,14 @@ class RegisterForm extends StatelessWidget {
                             hintText: 'Telefono',
                             labelText: 'Telefono',
                           ),
-                          onChanged: (value) => registerForm.phone = value,
+                          onChanged: (value) =>
+                              registerForm.person.phone = value,
                           validator: (value) {
                             return value != null && value.length == 8
                                 ? null
                                 : "Telefono no valido";
                           },
-                          initialValue: registerForm.phone,
+                          initialValue: registerForm.person.phone,
                         ),
                       ),
                       const SizedBox(height: 15),
@@ -180,7 +195,7 @@ class RegisterForm extends StatelessWidget {
                             hintText: 'Email',
                             labelText: 'Email',
                           ),
-                          onChanged: (value) => registerForm.email = value,
+                          onChanged: (value) => registerForm.user.email = value,
                           validator: (value) {
                             String pattern =
                                 r'^(([^&lt;&gt;()[\]\\.,;:\s@\"]+(\.[^&lt;&gt;()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
@@ -204,7 +219,8 @@ class RegisterForm extends StatelessWidget {
                             hintText: '********',
                             labelText: 'Password',
                           ),
-                          onChanged: (value) => registerForm.password = value,
+                          onChanged: (value) =>
+                              registerForm.user.password = value,
                           validator: (value) {
                             String pattern =
                                 r"^(?=.*\d)(?=.*[\u0021-\u002b\u003c-\u0040])(?=.*[A-Z])(?=.*[a-z])\S{8,16}$";
@@ -222,7 +238,7 @@ class RegisterForm extends StatelessWidget {
           ),
 
           Container(
-            child: registerForm.generateCode != 0
+            child: registerService.generateCode != 0
                 ? Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 25),
                     child: TextFormField(
@@ -235,10 +251,10 @@ class RegisterForm extends StatelessWidget {
                         labelText: 'Código de verificación de email',
                       ),
                       onChanged: (value) =>
-                          registerForm.verificationCode = int.parse(value),
+                          registerService.verificationCode = int.parse(value),
                       validator: (value) => value != null &&
-                              registerForm.verificationCode ==
-                                  registerForm.generateCode
+                              registerService.verificationCode ==
+                                  registerService.generateCode
                           ? null
                           : "El código introducido no es valido",
                     ),
@@ -261,7 +277,7 @@ class RegisterForm extends StatelessWidget {
                 : () async {
                     FocusScope.of(context).unfocus();
                     if (!registerForm.isValidForm()) return;
-                    if (registerForm.photoUrl == '') {
+                    if (registerForm.person.photo == '') {
                       showDialog(
                         context: context,
                         builder: (context) => const AlertDialog(
@@ -272,18 +288,24 @@ class RegisterForm extends StatelessWidget {
                     }
 
                     registerForm.isLoading = true;
-                    if (registerForm.name == '') {
-                      var response = await registerForm.verifyDataUser();
+                    if (registerForm.person.name == '') {
+                      var response = await registerService
+                          .verifyDataUser(registerForm.person);
                       if (response.containsKey('message')) {
+                        // ignore: use_build_context_synchronously
                         _showDialogError(context, response['message']);
                       }
                     } else {
-                      var response = await registerForm.registerNewUser();
+                      var response = await registerService.registerNewUser(
+                          registerForm.user, registerForm.person);
                       if (response.containsKey('message')) {
+                        // ignore: use_build_context_synchronously
                         _showDialogError(context, response['message']);
                       } else {
+                        // ignore: use_build_context_synchronously
                         _showDialogError(context, 'Usuario registrado');
-                        Navigator.pushReplacementNamed(context, Routes.LOGIN);
+                        // ignore: use_build_context_synchronously
+                        Navigator.pushReplacementNamed(context, Routes.login);
                       }
                     }
                     registerForm.isLoading = false;

@@ -1,29 +1,26 @@
 import 'dart:convert';
 
-class Category {
+class TypeComplaint {
   String id;
   String name;
-  String image;
 
-  Category({
+  TypeComplaint({
     required this.id,
     required this.name,
-    required this.image,
   });
 
-  factory Category.fromJson(String str) => Category.fromMap(json.decode(str));
+  factory TypeComplaint.fromJson(String str) =>
+      TypeComplaint.fromMap(json.decode(str));
 
   String toJson() => json.encode(toMap());
 
-  factory Category.fromMap(Map<String, dynamic> json) => Category(
+  factory TypeComplaint.fromMap(Map<String, dynamic> json) => TypeComplaint(
         id: json["_id"],
         name: json["name"],
-        image: json["image"],
       );
 
   Map<String, dynamic> toMap() => {
         "_id": id,
         "name": name,
-        "image": image,
       };
 }

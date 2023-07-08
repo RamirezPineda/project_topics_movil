@@ -30,6 +30,7 @@ class ShowMessage {
                   Provider.of<ComplaintService>(context, listen: false);
               final response = await complaintService.deleteComplaint(id);
               if (response.containsKey('message')) {
+                // ignore: use_build_context_synchronously
                 messageSimple(context, response['message']);
                 return;
               }

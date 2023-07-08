@@ -33,7 +33,7 @@ class RegisterFormProvider extends ChangeNotifier {
   }
 
   void _configureDio() {
-    _dio.options.baseUrl = HttpConfig.BASE_URL;
+    _dio.options.baseUrl = HttpConfig.baseUrl;
     _dio.options.connectTimeout = const Duration(seconds: 60);
     _dio.options.receiveTimeout = const Duration(seconds: 60);
     // _dio.options.sendTimeout = const Duration(seconds: 60);
@@ -59,14 +59,14 @@ class RegisterFormProvider extends ChangeNotifier {
       });
       // formData.fields.add(MapEntry('name', name));
       final response = await _dio.post('/api/verify-data-user', data: formData);
-      // print(response);
+
       name = response.data['name'];
       phone = response.data['phone'];
       address = response.data['address'];
       photo = response.data['photo'];
 
       return response.data;
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       if (e.response != null) {
         // print(e.response?.data);
         // print(e.response?.statusCode);
@@ -77,7 +77,6 @@ class RegisterFormProvider extends ChangeNotifier {
         return {'message': "Ocurrio un error en el server"};
       }
     } catch (error) {
-      print("ERROR SERVER: $error");
       return {'message': "Ocurrio un error en el server"};
     }
   }
@@ -108,7 +107,7 @@ class RegisterFormProvider extends ChangeNotifier {
       };
       final response = await _dio.post('/api/register', data: data);
       return response.data;
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       if (e.response != null) return e.response?.data;
 
       return {'message': "Ocurrio un error en el server"};
@@ -144,12 +143,11 @@ class RegisterFormProvider extends ChangeNotifier {
             DateTime.parse(response.data['lastPasswordChange'])
                 .toLocal()
                 .toString();
-        print(prefs.lastPasswordChange);
         password = '';
       }
 
       return response.data;
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       if (e.response != null) return e.response?.data;
 
       return {'message': "Ocurrio un error en el server"};

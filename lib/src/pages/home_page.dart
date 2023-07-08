@@ -22,12 +22,12 @@ class _HomePageState extends State<HomePage> {
     //Home
 
     const ComplaintsPage(),
-    // History
+    //My History
 
     const HistoryPage(),
 
-    //My profile
-    const PerfilPage(),
+    //Notification
+    const NotificationPage(),
   ];
 
   @override
@@ -63,7 +63,7 @@ class _HomePageState extends State<HomePage> {
               padding: const EdgeInsets.only(left: 25),
               child: ListTile(
                 onTap: () {
-                  Navigator.popAndPushNamed(context, Routes.PERFIL);
+                  Navigator.popAndPushNamed(context, Routes.perfil);
                 },
                 leading: const Icon(Icons.person),
                 title: const Text("Perfil"),
@@ -105,8 +105,8 @@ class _HomePageState extends State<HomePage> {
           tabBackgroundColor: Colors.grey.shade200,
           tabs: const [
             GButton(icon: CupertinoIcons.home, text: 'Home'),
-            GButton(icon: CupertinoIcons.doc_on_doc, text: 'Mi historial'),
-            GButton(icon: CupertinoIcons.person, text: 'Perfil'),
+            GButton(icon: CupertinoIcons.doc_plaintext, text: 'Mi historial'),
+            GButton(icon: CupertinoIcons.bell, text: 'Notificaciones'),
           ],
         ),
       ),

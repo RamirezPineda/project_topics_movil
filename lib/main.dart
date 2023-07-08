@@ -73,14 +73,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => CategoryService()),
+        ChangeNotifierProvider(create: (context) => TypeComplaintService()),
         ChangeNotifierProvider(create: (context) => ComplaintService()),
       ],
       child: MaterialApp(
         title: 'Topics Project',
         debugShowCheckedModeBanner: false,
         routes: Routes.getRoutes(),
-        initialRoute: Routes.HOME,
+        initialRoute: Routes.login,
         theme: ThemeData.light(useMaterial3: true).copyWith(
           textTheme: GoogleFonts.montserratTextTheme(),
           appBarTheme: const AppBarTheme(

@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import 'package:project_topics_movil/src/services/index.dart';
 import 'package:project_topics_movil/src/models/index.dart';
@@ -17,8 +16,8 @@ class ComplaintCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final CategoryService categoryService =
-        Provider.of<CategoryService>(context);
+    final TypeComplaintService typeComplaintService =
+        Provider.of<TypeComplaintService>(context);
     return Scaffold(
       appBar: AppBar(),
       body: SingleChildScrollView(
@@ -61,7 +60,8 @@ class ComplaintCard extends StatelessWidget {
               // Form
               ChangeNotifierProvider(
                 create: (context) => ComplaintFormController(complaint),
-                child: _ComplaintForm(categoryService: categoryService),
+                child:
+                    _ComplaintForm(typeComplaintService: typeComplaintService),
               ),
             ],
           ),
@@ -72,9 +72,9 @@ class ComplaintCard extends StatelessWidget {
 }
 
 class _ComplaintForm extends StatelessWidget {
-  const _ComplaintForm({required this.categoryService});
+  const _ComplaintForm({required this.typeComplaintService});
 
-  final CategoryService categoryService;
+  final TypeComplaintService typeComplaintService;
 
   @override
   Widget build(BuildContext context) {
@@ -83,12 +83,12 @@ class _ComplaintForm extends StatelessWidget {
     final ComplaintFormController complaintForm =
         Provider.of<ComplaintFormController>(context);
 
-    if (categoryService.isLoading) {
+    if (typeComplaintService.isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
-    if (complaintForm.complaint.categoryId == '') {
-      complaintForm.complaint.categoryId =
-          categoryService.dropdownList[0].value!;
+    if (complaintForm.complaint.typeComplaintId == '') {
+      complaintForm.complaint.typeComplaintId =
+          typeComplaintService.dropdownList[0].value!;
     }
 
     return Form(
@@ -158,10 +158,10 @@ class _ComplaintForm extends StatelessWidget {
                     fontWeight: FontWeight.w500,
                     fontSize: 16,
                   ),
-                  value: complaintForm.complaint.categoryId,
-                  items: categoryService.dropdownList,
+                  value: complaintForm.complaint.typeComplaintId,
+                  items: typeComplaintService.dropdownList,
                   onChanged: (value) {
-                    complaintForm.complaint.categoryId = value!;
+                    complaintForm.complaint.typeComplaintId = value!;
                     complaintForm.isLoading = false;
                   },
                 ),

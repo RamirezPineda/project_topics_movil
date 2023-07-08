@@ -24,7 +24,7 @@ class ComplaintService extends ChangeNotifier {
   }
 
   void _configureDio() {
-    _dio.options.baseUrl = HttpConfig.BASE_URL;
+    _dio.options.baseUrl = HttpConfig.baseUrl;
     _dio.options.connectTimeout = const Duration(seconds: 60);
     _dio.options.receiveTimeout = const Duration(seconds: 60);
   }
@@ -41,6 +41,7 @@ class ComplaintService extends ChangeNotifier {
     try {
       final response =
           await _dio.get('/api/complaints/person/${prefs.personId}');
+
       List<dynamic> allComplaints = response.data;
 
       for (var element in allComplaints) {
@@ -59,10 +60,8 @@ class ComplaintService extends ChangeNotifier {
 
   Future<Map<String, dynamic>> registerOrUpdate(Complaint complaint) async {
     if (complaint.id == null) {
-      // todo : register complaint
       return await _registerComplaint(complaint);
     } else {
-      // todo: updated complaint
       return await updateComplaint(complaint);
     }
   }
@@ -81,7 +80,7 @@ class ComplaintService extends ChangeNotifier {
         'latitude': position.latitude,
         'longitude': position.longitude,
         'personId': prefs.personId,
-        'categoryId': complaint.categoryId,
+        'typeComplaintId': complaint.typeComplaintId,
       });
 
       if (complaint.photos.length == 2) {
@@ -98,14 +97,13 @@ class ComplaintService extends ChangeNotifier {
 
       notifyListeners();
       return response.data;
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       if (e.response != null) {
         return e.response?.data;
       }
 
       return {'message': "Ocurrio un error en el server"};
     } catch (e) {
-      print('ocurrio algo: $e');
       return {'message': "Ocurrio un error intentelo mas tarde"};
     }
   }
@@ -118,7 +116,7 @@ class ComplaintService extends ChangeNotifier {
         'description': complaint.description,
         'photos': complaint.photos,
         'personId': prefs.personId,
-        'categoryId': complaint.categoryId,
+        'typeComplaintId': complaint.typeComplaintId,
       });
 
       final response =
@@ -132,12 +130,11 @@ class ComplaintService extends ChangeNotifier {
 
       notifyListeners();
       return response.data;
-    } on DioError {
+    } on DioException {
       // if (e.response != null) return e.response?.data;
 
       return {'message': "Ocurrio un error en el server"};
     } catch (e) {
-      print('ocurrio algo');
       return {'message': "Ocurrio un error intentelo mas tarde"};
     }
   }
@@ -152,7 +149,7 @@ class ComplaintService extends ChangeNotifier {
 
       notifyListeners();
       return response.data;
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       if (e.response != null) return e.response?.data;
 
       return {'message': "Ocurrio un error en el server"};
@@ -196,54 +193,30 @@ class ComplaintService extends ChangeNotifier {
   }
 
   void loadDropdownList(List<Complaint> complaints) {
-    for (var i = 0; i < complaints.length; i++) {
-      final existValue = dropdownList
-          .indexWhere((element) => element.value == complaints[i].state);
-      if (existValue == -1) {
-        dropdownList.add(
-          DropdownMenuItem(
-            value: complaitsList[i].state,
-            child: Text(complaints[i].state),
-          ),
-        );
-      }
-    }
+    // for (var i = 0; i < complaints.length; i++) {
+    //   final existValue = dropdownList
+    //       .indexWhere((element) => element.value == complaints[i].state);
+    //   if (existValue == -1) {
+    //     dropdownList.add(
+    //       DropdownMenuItem(
+    //         value: complaitsList[i].state,
+    //         child: Text(complaints[i].state),
+    //       ),
+    //     );
+    //   }
+    // }
+    dropdownList.add(const DropdownMenuItem(
+      value: "",
+      enabled: false,
+      child: Text('Estados'),
+    ));
+    dropdownList.add(
+        const DropdownMenuItem(value: "pendiente", child: Text('pendiente')));
+    dropdownList.add(
+        const DropdownMenuItem(value: "aceptado", child: Text('aceptado')));
+    dropdownList.add(
+        const DropdownMenuItem(value: "rechazado", child: Text('rechazado')));
+    dropdownList.add(
+        const DropdownMenuItem(value: "cancelado", child: Text('cancelado')));
   }
-
-  // Future<Position> _determinePosition() async {
-  //   bool serviceEnabled;
-  //   LocationPermission permission;
-
-  //   // Test if location services are enabled.
-  //   serviceEnabled = await Geolocator.isLocationServiceEnabled();
-  //   if (!serviceEnabled) {
-  //     // Location services are not enabled don't continue
-  //     // accessing the position and request users of the
-  //     // App to enable the location services.
-  //     return Future.error('Location services are disabled.');
-  //   }
-
-  //   permission = await Geolocator.checkPermission();
-  //   if (permission == LocationPermission.denied) {
-  //     permission = await Geolocator.requestPermission();
-  //     if (permission == LocationPermission.denied) {
-  //       // Permissions are denied, next time you could try
-  //       // requesting permissions again (this is also where
-  //       // Android's shouldShowRequestPermissionRationale
-  //       // returned true. According to Android guidelines
-  //       // your App should show an explanatory UI now.
-  //       return Future.error('Location permissions are denied');
-  //     }
-  //   }
-
-  //   if (permission == LocationPermission.deniedForever) {
-  //     // Permissions are denied forever, handle appropriately.
-  //     return Future.error(
-  //         'Location permissions are permanently denied, we cannot request permissions.');
-  //   }
-
-  //   // When we reach here, permissions are granted and we can
-  //   // continue accessing the position of the device.
-  //   return await Geolocator.getCurrentPosition();
-  // }
 }

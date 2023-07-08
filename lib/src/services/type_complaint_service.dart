@@ -4,21 +4,21 @@ import 'package:dio/dio.dart';
 import 'package:project_topics_movil/src/constants/http_config.dart';
 import 'package:project_topics_movil/src/models/index.dart';
 
-class CategoryService extends ChangeNotifier {
+class TypeComplaintService extends ChangeNotifier {
   final _dio = Dio();
 
-  List<Category> categoryList = [];
+  List<TypeComplaint> typesOfComplaintList = [];
   List<DropdownMenuItem<String>> dropdownList = [];
 
   bool _isLoading = false;
 
-  CategoryService() {
+  TypeComplaintService() {
     _configureDio();
     getAllCategories();
   }
 
   void _configureDio() {
-    _dio.options.baseUrl = HttpConfig.BASE_URL;
+    _dio.options.baseUrl = HttpConfig.baseUrl;
     _dio.options.connectTimeout = const Duration(seconds: 60);
     _dio.options.receiveTimeout = const Duration(seconds: 60);
   }
@@ -31,15 +31,15 @@ class CategoryService extends ChangeNotifier {
     print('llamada');
 
     try {
-      final response = await _dio.get('/api/categories');
+      final response = await _dio.get('/api/types');
       final List<dynamic> allCategories = response.data;
 
       for (var element in allCategories) {
-        final Category category = Category.fromMap(element);
-        categoryList.add(category);
+        final TypeComplaint category = TypeComplaint.fromMap(element);
+        typesOfComplaintList.add(category);
       }
-      loadDropdownList(categoryList);
-    } on DioError {
+      loadDropdownList(typesOfComplaintList);
+    } on DioException {
       // if (e.response != null) return [];
       // print(e);
     } finally {
@@ -48,12 +48,15 @@ class CategoryService extends ChangeNotifier {
     }
   }
 
-  void loadDropdownList(List<Category> category) {
-    for (var i = 0; i < category.length; i++) {
+  void loadDropdownList(List<TypeComplaint> typesOfComplaint) {
+    dropdownList.add(const DropdownMenuItem(
+        value: "", enabled: false, child: Text('Tipos de denuncia')));
+
+    for (var i = 0; i < typesOfComplaint.length; i++) {
       dropdownList.add(
         DropdownMenuItem(
-          value: category[i].id,
-          child: Text(category[i].name),
+          value: typesOfComplaint[i].id,
+          child: Text(typesOfComplaint[i].name),
         ),
       );
     }

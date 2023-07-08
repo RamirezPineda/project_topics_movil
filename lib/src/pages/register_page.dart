@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:project_topics_movil/src/constants/routes.dart';
-import 'package:project_topics_movil/src/providers/index.dart';
 import 'package:project_topics_movil/src/widgets/index.dart';
+
+import 'package:project_topics_movil/src/controllers/index.dart';
+import 'package:project_topics_movil/src/models/index.dart';
 
 class RegisterPage extends StatelessWidget {
   const RegisterPage({super.key});
@@ -20,8 +22,11 @@ class RegisterPage extends StatelessWidget {
               const SizedBox(height: 20),
               // Login form
               ChangeNotifierProvider(
-                create: (BuildContext context) => RegisterFormProvider(),
-                child: const RegisterForm(),
+                create: (BuildContext context) => RegisterFormController(
+                    User(email: "", password: ""),
+                    Person(
+                        ci: "", name: "", address: "", phone: "", photo: "")),
+                child: RegisterForm(),
               ),
 
               const SizedBox(height: 50),
@@ -52,7 +57,7 @@ class RegisterPage extends StatelessWidget {
                     style: TextStyle(color: Colors.grey[700])),
                 TextButton(
                   onPressed: () {
-                    Navigator.pushReplacementNamed(context, Routes.LOGIN);
+                    Navigator.pushReplacementNamed(context, Routes.login);
                   },
                   child: Text(
                     'Inciar sesión',

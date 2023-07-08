@@ -86,9 +86,9 @@ class ComplaintShow extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
               child: Text(
-                "Fecha: ${complaint.createdAt.toString()}",
+                "Fecha: ${complaint.createdAt.toString().substring(0, 16)}",
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
@@ -96,6 +96,19 @@ class ComplaintShow extends StatelessWidget {
                 ),
               ),
             ),
+            const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+              child: Text(
+                "Observación: ${complaint.observation ?? '---'}",
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.grey[600],
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
           ],
         ),
       ),

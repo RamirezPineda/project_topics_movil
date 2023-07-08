@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-class Auth {
+class User {
   String email;
   String password;
 
-  Auth({
+  User({
     required this.email,
     required this.password,
   });

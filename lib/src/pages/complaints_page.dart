@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:project_topics_movil/src/models/category_model.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:project_topics_movil/src/share_preferens/user_preferences.dart';
@@ -167,46 +166,6 @@ class ComplaintsPage extends StatelessWidget {
           //   ),
           // ),
         ],
-      ),
-    );
-  }
-
-  Widget _categoryCard(List<Category> categoryList, int index) {
-    return Padding(
-      padding: const EdgeInsets.all(10),
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 20),
-        decoration: BoxDecoration(
-          color: Colors.grey[200],
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            SizedBox(
-              height: 75,
-              child: FadeInImage(
-                placeholder: const AssetImage('assets/loading.gif'),
-                image: NetworkImage(categoryList[index].image),
-                fit: BoxFit.cover,
-              ),
-            ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  categoryList[index].name,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

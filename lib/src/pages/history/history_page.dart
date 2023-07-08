@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:project_topics_movil/src/pages/history/widgets/complaint_item.dart';
-import 'package:project_topics_movil/src/utils/index.dart';
 
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -18,44 +17,50 @@ class HistoryPage extends StatefulWidget {
 
 class _HistoryPageState extends State<HistoryPage> {
   List<Complaint> complaintsListFilter = [];
-
-  String filter = '';
-  String _optionSelectType = '';
-  String _optionSelectState = 'pendiente';
+  String _optionSelectType = "";
+  String _optionSelectState = "";
+  DateTime? _startDate;
+  DateTime? _endDate;
 
   void filterList(List<Complaint> complaintList) {
     complaintsListFilter = [];
 
-    if (filter == 'tipo') {
-      for (var i = 0; i < complaintList.length; i++) {
-        if (complaintList[i].categoryId == _optionSelectType) {
-          complaintsListFilter.add(complaintList[i]);
+    for (var i = 0; i < complaintList.length; i++) {
+      final complaint = complaintList[i];
+
+      if (_optionSelectType != "") {
+        if (_optionSelectType != complaint.typeComplaintId) continue;
+      }
+
+      if (_startDate != null && _endDate != null) {
+        final complaintDate = complaintList[i].createdAt;
+        if (complaintDate!.isBefore(_startDate!) ||
+            complaintDate.isAfter(_endDate!)) {
+          continue;
         }
       }
-    }
-    if (filter == 'state') {
-      for (var i = 0; i < complaintList.length; i++) {
-        if (complaintList[i].state == _optionSelectState) {
-          complaintsListFilter.add(complaintList[i]);
-        }
+
+      if (_optionSelectState != "") {
+        if (_optionSelectState != complaint.state) continue;
       }
+
+      complaintsListFilter.add(complaint);
     }
-    //filtrar por fecha
   }
 
   @override
   Widget build(BuildContext context) {
     final complaintService = Provider.of<ComplaintService>(context);
-    final categoryService = Provider.of<CategoryService>(context);
+    final typeComplaintService = Provider.of<TypeComplaintService>(context);
 
-    if (complaintService.isLoading || categoryService.isLoading) {
+    if (complaintService.isLoading || typeComplaintService.isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
-    if (filter == '') {
+
+    if (_optionSelectType == "" &&
+        _optionSelectState == "" &&
+        (_startDate == null || _endDate == null)) {
       complaintsListFilter = complaintService.complaitsList;
-    }
-    if (_optionSelectType == '') {
-      _optionSelectType = categoryService.categoryList[0].id;
     }
 
     return Padding(
@@ -88,7 +93,7 @@ class _HistoryPageState extends State<HistoryPage> {
                             description: '',
                             photos: [],
                             state: "",
-                            categoryId: ""),
+                            typeComplaintId: ""),
                       ),
                     ),
                   );
@@ -119,14 +124,17 @@ class _HistoryPageState extends State<HistoryPage> {
                 GestureDetector(
                   onTap: () {
                     setState(() {
-                      filter = '';
+                      _optionSelectType = "";
+                      _optionSelectState = "";
+                      _startDate = null;
+                      _endDate = null;
                       complaintsListFilter = complaintService.complaitsList;
                     });
                   },
                   child: const Padding(
                     padding: EdgeInsets.only(left: 5, top: 12),
                     child: Text(
-                      'Todos',
+                      'Limpiar filtro',
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 16,
@@ -149,10 +157,8 @@ class _HistoryPageState extends State<HistoryPage> {
                     value: _optionSelectState,
                     items: complaintService.dropdownList,
                     onChanged: (value) {
-                      // complaintForm.isLoading = false;
                       setState(() {
                         _optionSelectState = value!;
-                        filter = 'state';
                         filterList(complaintService.complaitsList);
                       });
                     },
@@ -170,17 +176,63 @@ class _HistoryPageState extends State<HistoryPage> {
                       fontWeight: FontWeight.w600,
                     ),
                     value: _optionSelectType,
-                    items: categoryService.dropdownList,
+                    items: typeComplaintService.dropdownList,
                     onChanged: (value) {
-                      // complaintForm.isLoading = false;
                       setState(() {
                         _optionSelectType = value!;
-                        filter = 'tipo';
                         filterList(complaintService.complaitsList);
                       });
                     },
                   ),
                 ),
+
+                //Filtrado por rango de fechas
+                // Fecha inicio
+                Padding(
+                  padding: const EdgeInsets.only(left: 20),
+                  child: TextButton.icon(
+                    onPressed: () async {
+                      _startDate = await _selectDate(context);
+                      setState(() {
+                        filterList(complaintService.complaitsList);
+                      });
+                    },
+                    icon: const Icon(Icons.calendar_month, color: Colors.black),
+                    label: Text(
+                      'Fecha inicio: ${_startDate != null ? _startDate.toString().substring(0, 10) : ''}',
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20),
+                  child: TextButton.icon(
+                    onPressed: () async {
+                      _endDate = await _selectDate(context);
+                      if (_endDate != null) {
+                        _endDate = DateTime(_endDate!.year, _endDate!.month,
+                            _endDate!.day, 23, 59, 59);
+                      }
+                      setState(() {
+                        filterList(complaintService.complaitsList);
+                      });
+                    },
+                    icon: const Icon(Icons.calendar_month, color: Colors.black),
+                    label: Text(
+                      'Fecha fin: ${_endDate != null ? _endDate.toString().substring(0, 10) : ''}',
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+                // en filter date
               ],
             ),
           ),
@@ -193,15 +245,23 @@ class _HistoryPageState extends State<HistoryPage> {
             child: ListView.builder(
               itemCount: complaintsListFilter.length,
               itemBuilder: (context, index) {
-                return ComplaintItem(
-                  complaint: complaintsListFilter[index],
-                  delay: index,
-                );
+                final complaint = complaintsListFilter[index];
+                return ComplaintItem(complaint: complaint, delay: index);
               },
             ),
           ),
         ],
       ),
     );
+  }
+
+  Future<DateTime?> _selectDate(BuildContext context) async {
+    DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2022),
+      lastDate: DateTime(2025),
+    );
+    return picked;
   }
 }

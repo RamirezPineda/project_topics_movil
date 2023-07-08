@@ -50,6 +50,24 @@ class UserPreferences {
   //   _prefs.setString('token', token ?? '');
   // }
 
+  static void saveUserPreferences(Map<String, dynamic> dataMap) {
+    final prefs = UserPreferences();
+
+    prefs.token = dataMap['token'];
+    prefs.id = dataMap['_id'];
+    prefs.email = dataMap['email'];
+    prefs.name = dataMap['name'];
+    prefs.ci = dataMap['ci'];
+    prefs.address = dataMap['address'];
+    prefs.phone = dataMap['phone'];
+    prefs.photo = dataMap['photo'];
+    prefs.personId = dataMap['personId'];
+    prefs.lastPasswordChange =
+        DateTime.parse(dataMap['lastPasswordChange']).toLocal().toString();
+
+    prefs.password = dataMap['password'];
+  }
+
   void clearUser() {
     _prefs.setString('token', '');
     _prefs.setString('id', '');

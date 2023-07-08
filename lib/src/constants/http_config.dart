@@ -1,11 +1,11 @@
 import 'package:dio/dio.dart';
-import 'package:project_topics_movil/src/share_preferens/user_preferences.dart';
+// import 'package:project_topics_movil/src/share_preferens/user_preferences.dart';
 
-final prefs = UserPreferences();
+// final prefs = UserPreferences();
 
-class DioSingleton {
-  static final _dio = Dio(BaseOptions(
-    baseUrl: 'http://192.168.0.58:3000',
+class DioConfig {
+  static final dio = Dio(BaseOptions(
+    baseUrl: 'http://192.168.43.226:3000',
     connectTimeout: const Duration(seconds: 60),
     receiveTimeout: const Duration(seconds: 60),
   ));
@@ -16,12 +16,10 @@ class DioSingleton {
   //   _dio.options.receiveTimeout = const Duration(seconds: 60);
   // _dio.options.sendTimeout = const Duration(seconds: 60);
   // }
-
-  get dio => _dio;
 }
 
 class HttpConfig {
-  static const String BASE_URL = 'http://192.168.0.58:3000';
+  static const String baseUrl = 'http://192.168.43.226:3000';
 
   // static Map<String, String> HEADERS = {
   //   HttpHeaders.contentTypeHeader: 'application/json',
@@ -30,8 +28,6 @@ class HttpConfig {
 }
 
 //    HttpHeaders.authorizationHeader: 'Bearer ${prefs.token}',
-
-  // maximo de 40 caracteres para el nombre de las categorias
 
 //https://assets9.lottiefiles.com/packages/lf20_dfvrnyjk.json //calles
 //https://assets2.lottiefiles.com/private_files/lf30_nep75hmm.json //agua y alcantarillado
