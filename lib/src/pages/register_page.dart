@@ -40,7 +40,7 @@ class RegisterPage extends StatelessWidget {
     );
   }
 
-  Padding _loginButton(BuildContext context) {
+  Widget _loginButton(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 25.0),
       child: Row(

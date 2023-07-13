@@ -11,36 +11,23 @@ import 'package:project_topics_movil/src/constants/http_config.dart';
 import 'package:project_topics_movil/src/models/index.dart';
 
 class ComplaintService extends ChangeNotifier {
-  final _dio = Dio();
-
   List<Complaint> complaitsList = [];
-  late Complaint selectedComplaint;
   bool isLoading = false;
   List<DropdownMenuItem<String>> dropdownList = [];
 
   ComplaintService() {
-    _configureDio();
     getAllComplaint();
   }
 
-  void _configureDio() {
-    _dio.options.baseUrl = HttpConfig.baseUrl;
-    _dio.options.connectTimeout = const Duration(seconds: 60);
-    _dio.options.receiveTimeout = const Duration(seconds: 60);
-  }
-
-  // void updateData() {
-  //   notifyListeners();
-  // }
-
   Future<void> getAllComplaint() async {
     isLoading = true;
+    notifyListeners();
     final prefs = UserPreferences();
     print('get complaints person');
     complaitsList = [];
     try {
       final response =
-          await _dio.get('/api/complaints/person/${prefs.personId}');
+          await DioConfig.dio.get('/api/complaints/person/${prefs.personId}');
 
       List<dynamic> allComplaints = response.data;
 
@@ -52,6 +39,7 @@ class ComplaintService extends ChangeNotifier {
       loadDropdownList(complaitsList);
     } catch (e) {
       //Todo: hacer algo
+      print(e);
     } finally {
       isLoading = false;
       notifyListeners();
@@ -88,7 +76,8 @@ class ComplaintService extends ChangeNotifier {
             'photo2', await MultipartFile.fromFile(complaint.photos[1])));
       }
 
-      final response = await _dio.post('/api/complaints', data: formData);
+      final response =
+          await DioConfig.dio.post('/api/complaints', data: formData);
 
       final newComplaint = Complaint.fromMap(response.data);
       complaitsList = complaitsList.reversed.toList();
@@ -119,8 +108,8 @@ class ComplaintService extends ChangeNotifier {
         'typeComplaintId': complaint.typeComplaintId,
       });
 
-      final response =
-          await _dio.put('/api/complaints/${complaint.id}', data: formData);
+      final response = await DioConfig.dio
+          .put('/api/complaints/${complaint.id}', data: formData);
 
       final updatedComplaint = Complaint.fromMap(response.data);
 
@@ -141,7 +130,7 @@ class ComplaintService extends ChangeNotifier {
 
   Future<Map<String, dynamic>> deleteComplaint(String id) async {
     try {
-      final response = await _dio.delete('/api/complaints/$id');
+      final response = await DioConfig.dio.delete('/api/complaints/$id');
 
       final complaint = Complaint.fromMap(response.data);
       int index = complaitsList.indexWhere((element) => element.id == id);

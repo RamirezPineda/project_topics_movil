@@ -5,7 +5,7 @@ import 'package:dio/dio.dart';
 
 class DioConfig {
   static final dio = Dio(BaseOptions(
-    baseUrl: 'http://192.168.43.226:3000',
+    baseUrl: 'http://192.168.0.58:3000',
     connectTimeout: const Duration(seconds: 60),
     receiveTimeout: const Duration(seconds: 60),
   ));
@@ -19,7 +19,7 @@ class DioConfig {
 }
 
 class HttpConfig {
-  static const String baseUrl = 'http://192.168.43.226:3000';
+  static const String baseUrl = 'http://192.168.0.58:3000';
 
   // static Map<String, String> HEADERS = {
   //   HttpHeaders.contentTypeHeader: 'application/json',

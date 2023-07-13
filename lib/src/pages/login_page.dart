@@ -60,7 +60,7 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  Padding _newAccountButton(BuildContext context) {
+  Widget _newAccountButton(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 25.0),
       child: Row(

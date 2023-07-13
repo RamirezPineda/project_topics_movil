@@ -29,7 +29,7 @@ class LoginForm extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
               keyboardType: TextInputType.emailAddress,
-              decoration: LoginInputDecoration.inputDecoration(
+              decoration: inputDecoration(
                 hintText: 'Email',
                 labelText: 'Email',
               ),
@@ -54,7 +54,7 @@ class LoginForm extends StatelessWidget {
               ),
               obscureText: true,
               keyboardType: TextInputType.text,
-              decoration: LoginInputDecoration.inputDecoration(
+              decoration: inputDecoration(
                 hintText: '********',
                 labelText: 'Password',
               ),
@@ -157,7 +157,7 @@ class LoginForm extends StatelessWidget {
         });
   }
 
-  Padding _forgotPassword() {
+  Widget _forgotPassword() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 25),
       child: Row(

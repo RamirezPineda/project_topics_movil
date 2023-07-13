@@ -14,7 +14,7 @@ class ComplaintItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FadeIn(
-      delay: Duration(milliseconds: 85 * delay!),
+      delay: Duration(milliseconds: 85 * (delay ?? 1)),
       child: Container(
         width: 350,
         height: 170,
@@ -175,9 +175,9 @@ class ComplaintItem extends StatelessWidget {
 
   void _onSelect(BuildContext context, String value) {
     // Verificar que la contrasena ha sido cambiado en 30 dias
-    final expired = VerifyPassword.isExpired();
+    final expired = isExpired();
     if (expired) {
-      VerifyPassword.showPasswordExpiredMessage(context);
+      showPasswordExpiredMessage(context);
       return;
     }
 
@@ -201,6 +201,6 @@ class ComplaintItem extends StatelessWidget {
       return;
     }
     // value == eliminar
-    ShowMessage.showDeleteMessage(context, '${complaint.id}');
+    showDeleteMessage(context, '${complaint.id}');
   }
 }

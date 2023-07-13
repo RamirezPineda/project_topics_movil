@@ -5,39 +5,31 @@ import 'package:project_topics_movil/src/constants/http_config.dart';
 import 'package:project_topics_movil/src/models/index.dart';
 
 class TypeComplaintService extends ChangeNotifier {
-  final _dio = Dio();
-
   List<TypeComplaint> typesOfComplaintList = [];
   List<DropdownMenuItem<String>> dropdownList = [];
 
   bool _isLoading = false;
 
   TypeComplaintService() {
-    _configureDio();
-    getAllCategories();
-  }
-
-  void _configureDio() {
-    _dio.options.baseUrl = HttpConfig.baseUrl;
-    _dio.options.connectTimeout = const Duration(seconds: 60);
-    _dio.options.receiveTimeout = const Duration(seconds: 60);
+    getAllTypesComplaint();
   }
 
   bool get isLoading => _isLoading;
 
-  Future<void> getAllCategories() async {
+  Future<void> getAllTypesComplaint() async {
     _isLoading = true;
     notifyListeners();
-    print('llamada');
+    typesOfComplaintList = [];
 
     try {
-      final response = await _dio.get('/api/types');
-      final List<dynamic> allCategories = response.data;
+      final response = await DioConfig.dio.get('/api/types');
+      final List<dynamic> allTypesComplaint = response.data;
 
-      for (var element in allCategories) {
-        final TypeComplaint category = TypeComplaint.fromMap(element);
-        typesOfComplaintList.add(category);
+      for (var element in allTypesComplaint) {
+        final TypeComplaint typeComplaint = TypeComplaint.fromMap(element);
+        typesOfComplaintList.add(typeComplaint);
       }
+
       loadDropdownList(typesOfComplaintList);
     } on DioException {
       // if (e.response != null) return [];
@@ -49,8 +41,13 @@ class TypeComplaintService extends ChangeNotifier {
   }
 
   void loadDropdownList(List<TypeComplaint> typesOfComplaint) {
-    dropdownList.add(const DropdownMenuItem(
-        value: "", enabled: false, child: Text('Tipos de denuncia')));
+    dropdownList.add(
+      const DropdownMenuItem(
+        value: "",
+        enabled: false,
+        child: Text('Tipos de denuncia'),
+      ),
+    );
 
     for (var i = 0; i < typesOfComplaint.length; i++) {
       dropdownList.add(

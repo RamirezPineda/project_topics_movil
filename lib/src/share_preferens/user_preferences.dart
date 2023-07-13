@@ -12,6 +12,8 @@ class UserPreferences {
     _prefs = await SharedPreferences.getInstance();
   }
 
+  get prefsUser => _prefs;
+
   String get token => _prefs.getString('token') ?? '';
   String get id => _prefs.getString('id') ?? '';
   String get email => _prefs.getString('email') ?? '';
@@ -22,8 +24,9 @@ class UserPreferences {
   String get phone => _prefs.getString('phone') ?? '';
   String get photo => _prefs.getString('photo') ?? '';
   String get personId => _prefs.getString('personId') ?? '';
-
   String get lastPasswordChange => _prefs.getString('lastPasswordChange') ?? '';
+
+  String get miClave => _prefs.getString('miClave') ?? "";
 
   set token(String token) => _prefs.setString('token', token);
   set id(String id) => _prefs.setString('id', id);
@@ -35,20 +38,10 @@ class UserPreferences {
   set phone(String phone) => _prefs.setString('phone', phone);
   set photo(String photo) => _prefs.setString('photo', photo);
   set personId(String personId) => _prefs.setString('personId', personId);
-
   set lastPasswordChange(String lastPasswordChange) =>
       _prefs.setString('lastPasswordChange', lastPasswordChange);
 
-  // void setUser(
-  //     {required String? email,
-  //     required String? name,
-  //     required String? photo,
-  //     required String? token}) {
-  //   _prefs.setString('email', email ?? '');
-  //   _prefs.setString('name', name ?? '');
-  //   _prefs.setString('photo', photo ?? '');
-  //   _prefs.setString('token', token ?? '');
-  // }
+  set miClave(String value) => _prefs.setString("miClave", value);
 
   static void saveUserPreferences(Map<String, dynamic> dataMap) {
     final prefs = UserPreferences();

@@ -109,6 +109,8 @@ class RegisterService {
       if (e.response != null) return e.response?.data;
 
       return {'message': "Ocurrio un error en el server"};
+    } catch (e) {
+      return {'message': "Ocurrio un error en el server"};
     }
   }
 }

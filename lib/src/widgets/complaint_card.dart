@@ -79,7 +79,7 @@ class _ComplaintForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ComplaintService complaintService =
-        Provider.of<ComplaintService>(context);
+        Provider.of<ComplaintService>(context, listen: false);
     final ComplaintFormController complaintForm =
         Provider.of<ComplaintFormController>(context);
 
@@ -101,7 +101,7 @@ class _ComplaintForm extends StatelessWidget {
               fontWeight: FontWeight.w500,
             ),
             keyboardType: TextInputType.text,
-            decoration: LoginInputDecoration.inputDecoration(
+            decoration: inputDecoration(
               hintText: 'Título',
               labelText: 'Título',
             ),
@@ -123,7 +123,7 @@ class _ComplaintForm extends StatelessWidget {
             ),
             keyboardType: TextInputType.multiline,
             maxLines: 7,
-            decoration: LoginInputDecoration.inputDecoration(
+            decoration: inputDecoration(
               hintText: 'Descripción',
               labelText: 'Descripción',
             ),

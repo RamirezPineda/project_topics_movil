@@ -96,7 +96,7 @@ class _PerfilForm extends StatelessWidget {
               autocorrect: true,
               style: const TextStyle(fontWeight: FontWeight.w600),
               keyboardType: TextInputType.text,
-              decoration: LoginInputDecoration.inputDecoration(
+              decoration: inputDecoration(
                 hintText: 'Dirección',
                 labelText: 'Dirección',
               ),
@@ -115,7 +115,7 @@ class _PerfilForm extends StatelessWidget {
             child: TextFormField(
               style: const TextStyle(fontWeight: FontWeight.w600),
               keyboardType: TextInputType.phone,
-              decoration: LoginInputDecoration.inputDecoration(
+              decoration: inputDecoration(
                 hintText: 'Telefono',
                 labelText: 'Telefono',
               ),
@@ -135,7 +135,7 @@ class _PerfilForm extends StatelessWidget {
               style: const TextStyle(fontWeight: FontWeight.w600),
               obscureText: true,
               keyboardType: TextInputType.text,
-              decoration: LoginInputDecoration.inputDecoration(
+              decoration: inputDecoration(
                 hintText: '********',
                 labelText: 'Nueva contraseña',
               ),

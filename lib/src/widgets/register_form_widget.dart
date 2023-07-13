@@ -89,10 +89,12 @@ class RegisterForm extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 10),
-          const Text('Foto de su rostro, sin gafas, gorras, etc.',
-              style: TextStyle(
-                color: Colors.grey,
-              )),
+          const Text(
+            'Foto de su rostro, sin gafas, gorras, etc.',
+            style: TextStyle(
+              color: Colors.grey,
+            ),
+          ),
           const SizedBox(height: 20),
 
           // ci field
@@ -104,7 +106,7 @@ class RegisterForm extends StatelessWidget {
               ),
               enabled: registerForm.person.name == '',
               keyboardType: TextInputType.text,
-              decoration: LoginInputDecoration.inputDecoration(
+              decoration: inputDecoration(
                 hintText: 'Ci',
                 labelText: 'Ci',
               ),
@@ -132,7 +134,7 @@ class RegisterForm extends StatelessWidget {
                           ),
                           enabled: false,
                           keyboardType: TextInputType.text,
-                          decoration: LoginInputDecoration.inputDecoration(
+                          decoration: inputDecoration(
                             hintText: 'Nombre',
                             labelText: 'Nombre',
                           ),
@@ -147,7 +149,7 @@ class RegisterForm extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                           ),
                           keyboardType: TextInputType.text,
-                          decoration: LoginInputDecoration.inputDecoration(
+                          decoration: inputDecoration(
                             hintText: 'Dirección',
                             labelText: 'Dirección',
                           ),
@@ -169,7 +171,7 @@ class RegisterForm extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                           ),
                           keyboardType: TextInputType.phone,
-                          decoration: LoginInputDecoration.inputDecoration(
+                          decoration: inputDecoration(
                             hintText: 'Telefono',
                             labelText: 'Telefono',
                           ),
@@ -191,7 +193,7 @@ class RegisterForm extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                           ),
                           keyboardType: TextInputType.emailAddress,
-                          decoration: LoginInputDecoration.inputDecoration(
+                          decoration: inputDecoration(
                             hintText: 'Email',
                             labelText: 'Email',
                           ),
@@ -215,7 +217,7 @@ class RegisterForm extends StatelessWidget {
                           ),
                           obscureText: true,
                           keyboardType: TextInputType.text,
-                          decoration: LoginInputDecoration.inputDecoration(
+                          decoration: inputDecoration(
                             hintText: '********',
                             labelText: 'Password',
                           ),
@@ -246,7 +248,7 @@ class RegisterForm extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                       keyboardType: TextInputType.number,
-                      decoration: LoginInputDecoration.inputDecoration(
+                      decoration: inputDecoration(
                         hintText: 'Código de verificación de email',
                         labelText: 'Código de verificación de email',
                       ),
