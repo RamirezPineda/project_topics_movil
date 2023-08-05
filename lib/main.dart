@@ -1,71 +1,58 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:project_topics_movil/src/providers/index.dart';
 
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-// import 'package:firebase_messaging/firebase_messaging.dart';
+
+import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
 
 import 'package:project_topics_movil/src/constants/routes.dart';
 import 'package:project_topics_movil/src/share_preferens/user_preferences.dart';
 import 'package:project_topics_movil/src/services/index.dart';
-
-// Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-//   // If you're going to use other Firebase services in the background, such as Firestore,
-//   // make sure you call `initializeApp` before using other Firebase services.
-//   await Firebase.initializeApp();
-//   print('=========== ON BACKGROUND============');
-
-//   print("Handling a background message: ${message.messageId}");
-//   print(message.data);
-//   print(message.notification?.title);
-//   print(message.notification?.body);
-// }
+import 'package:project_topics_movil/src/providers/index.dart';
+import 'package:project_topics_movil/src/db/index.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  var databasesPath = await getDatabasesPath();
+  String path = join(databasesPath, 'demo.db');
+
+  Database database = await openDatabase(path, version: 1,
+      onCreate: (Database db, int version) async {
+    // When creating the db, create the table
+    await db.execute(
+        'CREATE TABLE IF NOT EXISTS complaint (_id TEXT PRIMARY KEY, state TEXT, observation TEXT)');
+    await db.execute(
+        'CREATE TABLE IF NOT EXISTS notification (_id TEXT PRIMARY KEY, title TEXT TEXT, description TEXT)');
+
+    print('tablas creadas');
+  });
+
+  print('Databaseee: $database');
+  await database.close();
+
   final prefs = UserPreferences();
   await prefs.initPrefs();
-  print('prefs unicializado en el main');
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // FirebaseMessaging messaging = FirebaseMessaging.instance;
+  // final messaging = FirebaseMessaging.instance;
+  // print("Token Movil: ${await messaging.getToken()}");
 
-  // NotificationSettings settings = await messaging.requestPermission(
-  //   alert: true,
-  //   announcement: false,
-  //   badge: true,
-  //   carPlay: false,
-  //   criticalAlert: false,
-  //   provisional: false,
-  //   sound: true,
-  // );
-
-  // print('User granted permission: ${settings.authorizationStatus}');
-  // print(await messaging.getToken());
-  // //eIvMCsYVTXStli4KyW_RYz:APA91bE-qeKMs0wU5iS_mOgy0B9_miTsY2GCg9VBoyTS_qBQsKqrtftP6RygYu-wBaYxWDHtIyX1i1kHWq_S5cAP1EP5hpwk_vxcOzanHifX9aAU0dYSvtycqbousGNWdINu2is_7KOt
-
-  // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
-  // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-  //   //si la app esta abierta trabajar con (local-notification)
-  //   print('=========== ON MESSAGE============');
-  //   print('Got a message whilst in the foreground!');
-  //   print('Message data: ${message.data}');
-
-  //   if (message.notification != null) {
-  //     print('Message also contained a notification: ${message.notification}');
-  //     print(message.notification?.title);
-  //     print(message.notification?.body);
-  //   }
-  // });
-
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => NotificationProvider(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -76,14 +63,56 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+  _init() async {
+    final pushProvider = PushNotificationProvider();
+    await pushProvider.initNotifications();
+
+    pushProvider.messages.listen((argument) async {
+      if (argument.isNotEmpty) {
+        try {
+          final Map<String, dynamic> complaintMap =
+              json.decode(argument['complaint']);
+          final Map<String, dynamic> notificationMap =
+              json.decode(argument['notification']);
+
+          var dataBaseLocal = DBSQLiteLocal();
+          await dataBaseLocal.openDataBaseLocal();
+
+          await dataBaseLocal.insert('complaint', complaintMap);
+          await dataBaseLocal.insert('notification', notificationMap);
+
+          await dataBaseLocal.closeDataBase();
+        } catch (e) {
+          // print(e);
+        }
+
+        final prefs = UserPreferences();
+        prefs.selectedPage = 1;
+
+        pushProvider.deleteData();
+        navigatorKey.currentState?.pushNamed('home');
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _init();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => TypeComplaintService()),
         ChangeNotifierProvider(create: (context) => ComplaintService()),
+        ChangeNotifierProvider(create: (context) => NotificationService()),
       ],
       child: MaterialApp(
+        navigatorKey: navigatorKey,
         title: 'Topics Project',
         debugShowCheckedModeBanner: false,
         routes: Routes.getRoutes(),

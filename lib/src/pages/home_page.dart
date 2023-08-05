@@ -6,24 +6,75 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:project_topics_movil/src/constants/routes.dart';
 import 'package:project_topics_movil/src/share_preferens/user_preferences.dart';
 import 'package:project_topics_movil/src/pages/index.dart';
+import 'package:project_topics_movil/src/db/index.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final int? selectedPage;
+
+  const HomePage({super.key, this.selectedPage});
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   final prefs = UserPreferences();
-  int _selectedIndex = 0;
+
+  _checkIfThereIsNotification() async {
+    bool renderAgain = false;
+    try {
+      var dataBaseLocal = DBSQLiteLocal();
+      await dataBaseLocal.openDataBaseLocal();
+      bool isEmptyTable = await dataBaseLocal.isTheTableEmpty('complaint');
+
+      if (!isEmptyTable) {
+        if (prefs.selectedPage != 1) {
+          prefs.selectedPage = 1;
+          print('la lista no esta vacia de complint - Home');
+          setState(() {});
+        } else {
+          renderAgain = true;
+        }
+      } else {
+        print('la lista esta vacia de complaints - Home');
+      }
+
+      await dataBaseLocal.closeDataBase();
+    } catch (e) {
+      // print(e);
+    } finally {
+      if (renderAgain) {
+        print('IsThereNotification - IR A VISTA HOME DE NUEVO');
+        Navigator.pushNamedAndRemoveUntil(context, 'home', (route) => false);
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _checkIfThereIsNotification();
+      print('se ejecuto didChangeAppLifecycleState desde HOME');
+    }
+  }
 
   final List<Widget> tabBarViews = [
     //Home
-
     const ComplaintsPage(),
-    //My History
 
+    //My History
     const HistoryPage(),
 
     //Notification
@@ -77,7 +128,7 @@ class _HomePageState extends State<HomePage> {
                 onTap: () {
                   // limpiar los datos del usuario
                   prefs.clearUser();
-                  Navigator.pushReplacementNamed(context, "login");
+                  Navigator.pushReplacementNamed(context, Routes.login);
                 },
                 leading: const Icon(Icons.logout),
                 title: const Text("Cerrar sesión"),
@@ -86,15 +137,16 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      body: tabBarViews[_selectedIndex],
+      body: tabBarViews[prefs.selectedPage],
 
       //Button Navigator Bar
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
         child: GNav(
-          selectedIndex: _selectedIndex,
+          selectedIndex: prefs.selectedPage,
           onTabChange: (index) {
-            setState(() => _selectedIndex = index);
+            //todo: change a _selectIndex
+            setState(() => prefs.selectedPage = index);
           },
           gap: 8,
           mainAxisAlignment: MainAxisAlignment.center,

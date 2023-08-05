@@ -15,7 +15,6 @@ class RegisterService {
     try {
       // final fcmToken = await FirebaseMessaging.instance.getToken();
       // print('tokenMovil $fcmToken');
-//  eIvMCsYVTXStli4KyW_RYz:APA91bE-qeKMs0wU5iS_mOgy0B9_miTsY2GCg9VBoyTS_qBQsKqrtftP6RygYu-wBaYxWDHtIyX1i1kHWq_S5cAP1EP5hpwk_vxcOzanHifX9aAU0dYSvtycqbousGNWdINu2is_7KOt
       var formData = FormData.fromMap({
         'ci': person.ci,
         'image': await MultipartFile.fromFile(person.photo),

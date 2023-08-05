@@ -45,106 +45,106 @@ class ComplaintsPage extends StatelessWidget {
 
           // ComplaintItem(),
 
-          Container(
-            width: 350,
-            height: 170,
-            decoration: BoxDecoration(
-              color: Colors.blue,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Stack(
-              children: [
-                SizedBox(
-                  width: 350,
-                  height: 170,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Image.asset(
-                      'assets/fondos/fondo5.jpg',
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Falta de iluminacion en la avenida principal, provoca inseguridad y peligros inminentes.',
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(top: 10),
-                                  child: Badge(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 12),
-                                    label: Text(
-                                      'pendiente',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: 2,
-                                        fontSize: 12,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              final currentDate = DateTime.now();
-                              final nuevo =
-                                  currentDate.add(const Duration(seconds: 1));
-                              if (currentDate.compareTo(nuevo) == 1) {
-                                print('la fecha 1 es mayor');
-                              }
-                              print(currentDate.compareTo(nuevo));
-                              print(nuevo.toIso8601String());
-                              print(DateTime.parse(
-                                  DateTime.now().toIso8601String()));
-                              showDialog(
-                                context: context,
-                                builder: (context) => const AlertDialog(
-                                  title: Text('Debe cambiar su contrasena!'),
-                                ),
-                              );
-                            },
-                            icon: const Icon(
-                              Icons.more_vert,
-                              size: 30,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const Text(
-                        '20/06/2023',
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ),
+          // Container(
+          //   width: 350,
+          //   height: 170,
+          //   decoration: BoxDecoration(
+          //     color: Colors.blue,
+          //     borderRadius: BorderRadius.circular(10),
+          //   ),
+          //   child: Stack(
+          //     children: [
+          //       SizedBox(
+          //         width: 350,
+          //         height: 170,
+          //         child: ClipRRect(
+          //           borderRadius: BorderRadius.circular(10),
+          //           child: Image.asset(
+          //             'assets/fondos/fondo5.jpg',
+          //             fit: BoxFit.cover,
+          //           ),
+          //         ),
+          //       ),
+          //       Padding(
+          //         padding: const EdgeInsets.all(15.0),
+          //         child: Column(
+          //           crossAxisAlignment: CrossAxisAlignment.start,
+          //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //           children: [
+          //             Row(
+          //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //               children: [
+          //                 const Expanded(
+          //                   child: Column(
+          //                     crossAxisAlignment: CrossAxisAlignment.start,
+          //                     children: [
+          //                       Text(
+          //                         'Falta de iluminacion en la avenida principal, provoca inseguridad y peligros inminentes.',
+          //                         maxLines: 2,
+          //                         overflow: TextOverflow.ellipsis,
+          //                         style: TextStyle(
+          //                           color: Colors.white,
+          //                           fontSize: 16,
+          //                           fontWeight: FontWeight.w500,
+          //                         ),
+          //                       ),
+          //                       Padding(
+          //                         padding: EdgeInsets.only(top: 10),
+          //                         child: Badge(
+          //                           padding:
+          //                               EdgeInsets.symmetric(horizontal: 12),
+          //                           label: Text(
+          //                             'pendiente',
+          //                             style: TextStyle(
+          //                               fontWeight: FontWeight.bold,
+          //                               letterSpacing: 2,
+          //                               fontSize: 12,
+          //                             ),
+          //                           ),
+          //                         ),
+          //                       ),
+          //                     ],
+          //                   ),
+          //                 ),
+          //                 IconButton(
+          //                   onPressed: () {
+          //                     final currentDate = DateTime.now();
+          //                     final nuevo =
+          //                         currentDate.add(const Duration(seconds: 1));
+          //                     if (currentDate.compareTo(nuevo) == 1) {
+          //                       // print('la fecha 1 es mayor');
+          //                     }
+          //                     // print(currentDate.compareTo(nuevo));
+          //                     // print(nuevo.toIso8601String());
+          //                     // print(DateTime.parse(
+          //                     //     DateTime.now().toIso8601String()));
+          //                     showDialog(
+          //                       context: context,
+          //                       builder: (context) => const AlertDialog(
+          //                         title: Text('Debe cambiar su contrasena!'),
+          //                       ),
+          //                     );
+          //                   },
+          //                   icon: const Icon(
+          //                     Icons.more_vert,
+          //                     size: 30,
+          //                     color: Colors.white,
+          //                   ),
+          //                 ),
+          //               ],
+          //             ),
+          //             const Text(
+          //               '20/06/2023',
+          //               style: TextStyle(
+          //                 color: Colors.white,
+          //               ),
+          //             ),
+          //           ],
+          //         ),
+          //       )
+          //     ],
+          //   ),
+          // ),
           // Categories
           // Expanded(
           //   child: GridView.builder(

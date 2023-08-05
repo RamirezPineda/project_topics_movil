@@ -19,12 +19,12 @@ class TypeComplaintService extends ChangeNotifier {
   Future<void> getAllTypesComplaint() async {
     _isLoading = true;
     notifyListeners();
-    typesOfComplaintList = [];
 
     try {
       final response = await DioConfig.dio.get('/api/types');
       final List<dynamic> allTypesComplaint = response.data;
 
+      typesOfComplaintList = [];
       for (var element in allTypesComplaint) {
         final TypeComplaint typeComplaint = TypeComplaint.fromMap(element);
         typesOfComplaintList.add(typeComplaint);

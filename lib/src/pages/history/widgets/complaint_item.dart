@@ -25,7 +25,7 @@ class ComplaintItem extends StatelessWidget {
           //   begin: Alignment.topCenter,
           //   end: Alignment.bottomCenter,
           // ),
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(8),
         ),
         margin: const EdgeInsets.symmetric(vertical: 10),
         child: Stack(

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-class NotificationProvider extends ChangeNotifier {
-  String _notificationData = '';
+class NotificationProvider with ChangeNotifier {
+  bool _thereIsNotification = false;
 
-  String get notificationData => _notificationData;
+  bool get thereIsNotification => _thereIsNotification;
 
-  void setNotificationData(String data) {
-    _notificationData = data;
+  set thereIsNotification(bool value) {
+    _thereIsNotification = value;
     notifyListeners();
   }
 }

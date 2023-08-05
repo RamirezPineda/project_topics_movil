@@ -68,7 +68,7 @@ class RegisterForm extends StatelessWidget {
                   onPressed: () async {
                     final ImagePicker picker = ImagePicker();
                     final XFile? image = await picker.pickImage(
-                      source: ImageSource.gallery,
+                      source: ImageSource.camera,
                       imageQuality: 100,
                     );
 

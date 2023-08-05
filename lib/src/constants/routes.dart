@@ -19,8 +19,6 @@ class Routes {
     final prefs = UserPreferences();
 
     return <String, WidgetBuilder>{
-      // LOGIN: (BuildContext context) =>
-      //     prefs.clientId == 0 || prefs.token == '' ? LoginPage() : HomePage(),
       login: (BuildContext context) =>
           prefs.token != "" ? const HomePage() : const LoginPage(),
       register: (BuildContext context) => const RegisterPage(),
@@ -28,8 +26,6 @@ class Routes {
       perfil: (BuildContext context) => const PerfilPage(),
       history: (BuildContext context) => const HistoryPage(),
       notification: (BuildContext context) => const NotificationPage(),
-      // COMPLAINTCARD: (BuildContext context) => ComplaintCard(),
-      // COMPLAINTSHOW: (BuildContext context) => ComplaintShow(),
     };
   }
 }

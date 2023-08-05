@@ -4,11 +4,12 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:project_topics_movil/src/db/index.dart';
 
 import 'package:project_topics_movil/src/share_preferens/user_preferences.dart';
-import 'package:project_topics_movil/src/constants/http_config.dart';
 import 'package:project_topics_movil/src/models/index.dart';
+import 'package:project_topics_movil/src/constants/http_config.dart';
+import 'package:path_provider/path_provider.dart';
 
 class ComplaintService extends ChangeNotifier {
   List<Complaint> complaitsList = [];
@@ -23,14 +24,14 @@ class ComplaintService extends ChangeNotifier {
     isLoading = true;
     notifyListeners();
     final prefs = UserPreferences();
-    print('get complaints person');
-    complaitsList = [];
+    print('get All Complaint');
     try {
       final response =
           await DioConfig.dio.get('/api/complaints/person/${prefs.personId}');
 
       List<dynamic> allComplaints = response.data;
 
+      complaitsList = [];
       for (var element in allComplaints) {
         final Complaint complaint = Complaint.fromMap(element);
         complaitsList.add(complaint);
@@ -38,8 +39,7 @@ class ComplaintService extends ChangeNotifier {
 
       loadDropdownList(complaitsList);
     } catch (e) {
-      //Todo: hacer algo
-      print(e);
+      // print(e);
     } finally {
       isLoading = false;
       notifyListeners();
@@ -207,5 +207,37 @@ class ComplaintService extends ChangeNotifier {
         const DropdownMenuItem(value: "rechazado", child: Text('rechazado')));
     dropdownList.add(
         const DropdownMenuItem(value: "cancelado", child: Text('cancelado')));
+  }
+
+  Future<void> updateData() async {
+    try {
+      var dataBaseLocal = DBSQLiteLocal();
+      await dataBaseLocal.openDataBaseLocal();
+
+      final allComplaintDBLocal = await dataBaseLocal.getAllItems('complaint');
+
+      if (allComplaintDBLocal.isNotEmpty) {
+        final complaintData = allComplaintDBLocal.first;
+        final id = complaintData['_id'];
+
+        int index = complaitsList.indexWhere((element) => element.id == id);
+        final complaintFound = complaitsList[index];
+
+        complaitsList.removeAt(index);
+
+        complaintFound.state = complaintData['state'];
+        complaintFound.observation = complaintData['observation'];
+
+        complaitsList.insert(0, complaintFound);
+
+        await dataBaseLocal.clearTable('complaint');
+      }
+
+      await dataBaseLocal.closeDataBase();
+    } catch (e) {
+      // print(e);
+    } finally {
+      notifyListeners();
+    }
   }
 }

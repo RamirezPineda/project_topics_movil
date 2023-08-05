@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:project_topics_movil/src/pages/history/widgets/complaint_item.dart';
 
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'package:project_topics_movil/src/pages/history/widgets/complaint_item.dart';
+
 import 'package:project_topics_movil/src/services/index.dart';
 import 'package:project_topics_movil/src/widgets/index.dart';
 import 'package:project_topics_movil/src/models/index.dart';
+import 'package:project_topics_movil/src/db/index.dart';
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage({super.key});
@@ -17,10 +19,39 @@ class HistoryPage extends StatefulWidget {
 
 class _HistoryPageState extends State<HistoryPage> {
   List<Complaint> complaintsListFilter = [];
+
+  // Filters
   String _optionSelectType = "";
   String _optionSelectState = "";
   DateTime? _startDate;
   DateTime? _endDate;
+
+  bool thereIsNotification = false;
+
+  Future<void> _checkIfThereIsNotification() async {
+    try {
+      var dataBaseLocal = DBSQLiteLocal();
+      await dataBaseLocal.openDataBaseLocal();
+
+      bool isEmptyTable = await dataBaseLocal.isTheTableEmpty('complaint');
+
+      if (!isEmptyTable) {
+        thereIsNotification = true;
+
+        setState(() {});
+      }
+
+      dataBaseLocal.closeDataBase();
+    } catch (e) {
+      // print(e);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _checkIfThereIsNotification();
+  }
 
   void filterList(List<Complaint> complaintList) {
     complaintsListFilter = [];
@@ -63,6 +94,12 @@ class _HistoryPageState extends State<HistoryPage> {
       complaintsListFilter = complaintService.complaitsList;
     }
 
+    if (thereIsNotification) {
+      //todo: arreglar esto
+      complaintService.updateData();
+      thereIsNotification = false;
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
@@ -72,6 +109,7 @@ class _HistoryPageState extends State<HistoryPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              //Title
               const Text(
                 'Mi historial',
                 style: TextStyle(
@@ -115,7 +153,7 @@ class _HistoryPageState extends State<HistoryPage> {
           const Divider(color: Colors.grey, thickness: 1),
           const SizedBox(height: 5),
 
-          // Filters
+          // FILTERS
           SizedBox(
             height: 40,
             child: ListView(
@@ -134,7 +172,7 @@ class _HistoryPageState extends State<HistoryPage> {
                   child: const Padding(
                     padding: EdgeInsets.only(left: 5, top: 12),
                     child: Text(
-                      'Limpiar filtro',
+                      'Todo',
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 16,
@@ -144,7 +182,7 @@ class _HistoryPageState extends State<HistoryPage> {
                   ),
                 ),
 
-                //Filtrado por estados
+                //Filter by states
                 Padding(
                   padding: const EdgeInsets.only(left: 20),
                   child: DropdownButton(
@@ -165,7 +203,7 @@ class _HistoryPageState extends State<HistoryPage> {
                   ),
                 ),
 
-                // Filtrado por tipo de denuncia
+                // Filter by type of complaint
                 Padding(
                   padding: const EdgeInsets.only(left: 20),
                   child: DropdownButton(
@@ -186,8 +224,8 @@ class _HistoryPageState extends State<HistoryPage> {
                   ),
                 ),
 
-                //Filtrado por rango de fechas
-                // Fecha inicio
+                //Filter by date range
+                // Start date
                 Padding(
                   padding: const EdgeInsets.only(left: 20),
                   child: TextButton.icon(
@@ -208,6 +246,8 @@ class _HistoryPageState extends State<HistoryPage> {
                     ),
                   ),
                 ),
+
+                // End date
                 Padding(
                   padding: const EdgeInsets.only(left: 20),
                   child: TextButton.icon(

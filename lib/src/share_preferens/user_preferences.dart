@@ -26,7 +26,7 @@ class UserPreferences {
   String get personId => _prefs.getString('personId') ?? '';
   String get lastPasswordChange => _prefs.getString('lastPasswordChange') ?? '';
 
-  String get miClave => _prefs.getString('miClave') ?? "";
+  int get selectedPage => _prefs.getInt('selectedPage') ?? 0;
 
   set token(String token) => _prefs.setString('token', token);
   set id(String id) => _prefs.setString('id', id);
@@ -41,7 +41,7 @@ class UserPreferences {
   set lastPasswordChange(String lastPasswordChange) =>
       _prefs.setString('lastPasswordChange', lastPasswordChange);
 
-  set miClave(String value) => _prefs.setString("miClave", value);
+  set selectedPage(int value) => _prefs.setInt("selectedPage", value);
 
   static void saveUserPreferences(Map<String, dynamic> dataMap) {
     final prefs = UserPreferences();
@@ -72,5 +72,7 @@ class UserPreferences {
     _prefs.setString('photo', '');
     _prefs.setString('password', '');
     _prefs.setString('personId', '');
+    _prefs.setString('lastPasswordChange', '');
+    _prefs.setInt("selectedPage", 0);
   }
 }
